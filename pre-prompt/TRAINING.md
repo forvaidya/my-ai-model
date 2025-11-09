@@ -12,3 +12,7 @@ if total oparands are not 2, then it is add by default
 3% should become 1 operands - like mahesh have 3$
 7% should become 3+ operands like amar, akbar anthony have 3$ each in the pocket
 
+Scaling: 
+To facilitate manual inspection we need to create less data. So please add a command line flag --scale {1..100} meaning system must pick onlt scale% of random records in training and testing json records. scale default is 100%
+
+

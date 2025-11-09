@@ -1,63 +1,60 @@
-You are an expert Python developer specializing in data generation for natural language processing (NLP) intent classification. Create a complete, self-contained Python script file named `intent_data_generator.py` that performs the following tasks:
+# Prompt for Generating Python Script: Intent Detection Data Generator and Classifier Module
 
-#### Core Requirements:
-- **Data Generation Logic**:
-  - Generate 100,000 training examples and 20,000 testing examples. Each example is a pair: a natural-sounding English sentence (input) and a corresponding intent label (output).
-  - Sentences must simulate real-world scenarios involving two actors (e.g., "A gives B a book") and an object (e.g., "a book"). The intent is derived from the interaction:
-    - **Addition Intent (+ or 'add')**: Triggered if the verb implies gaining/receiving (use these verbs: gain, receive, add, get, obtain, find). In this case, the label is 'add' or '+'. The sentence structure should imply summation, e.g., "Alice receives 5 candies from Bob" → label: 'add'.
-    - **Subtraction Intent (- or 'subtract')**: For all other cases (e.g., verbs implying loss, transfer away, or neutral/default). Invent 8-10 subtraction-like verbs such as: lose, give, take, remove, spend, donate, forfeit, surrender, yield, relinquish. The label is 'subtract' or '-'. Example: "Bob gives 3 books to Alice" → label: 'subtract'.
-    - If the sentence explicitly uses symbols like '+' or '-' in a mathematical context (e.g., "a + b" or "x - y"), map directly to 'add' or 'subtract'.
-    - Always involve exactly two operands/actors and one object. If exactly two actors are present, treat as subtraction unless an add-verb is used.
-    - Intents can be labeled as either the word ('add'/'subtract') or the symbol ('+'/' - '), chosen randomly with 50% probability for variety.
-  - **Incorporate Useless Data (Noise for Robustness)**:
-    - 70% of sentences should be "useful" (clearly matching the above logic).
-    - 30% should be "useless" noise: Random, irrelevant, or garbled sentences that don't fit the pattern (e.g., "The sky is blue and birds fly high", "Random gibberish xyz 123", weather descriptions, shopping lists, or off-topic chit-chat). Label these as 'neutral' or 'none' to train the model to ignore them.
-    - Mix in typos, slang, or incomplete sentences in 20% of all data for realism (e.g., "bob giv 2 candys to alice" instead of proper grammar).
+## Overview
+You are an expert Python developer. Create a comprehensive Python script that generates synthetic training and testing datasets for intent detection in natural language statements involving people (actors) and objects (money or items). The core task is to classify the **intent** of each statement as either **"add"** (for addition/summation) or **"subtract"** (for subtraction/difference), based on the number of operands (people mentioned) and the context.
 
-- **Names and Roles**:
-  - Use real, commonly used names categorized by faith and gender. Provide lists in the code:
-    - **Hindu Males (10)**: Aryan, Rohan, Arjun, Vikram, Karan, Dev, Raj, Sameer, Amit, Rahul.
-    - **Hindu Females (10)**: Priya, Aishwarya, Lakshmi, Radha, Sita, Anjali, Meera, Pooja, Divya, Kavya.
-    - **Muslim Males (10)**: Ahmed, Faisal, Omar, Bilal, Yusuf, Hassan, Tariq, Khalid, Imran, Zain.
-    - **Muslim Females (10)**: Ayesha, Fatima, Zainab, Noor, Sana, Hina, Mariam, Layla, Rania, Sara.
-    - **Christian Males (10)**: John, David, Michael, James, Daniel, Matthew, Luke, Peter, Andrew, Thomas.
-    - **Christian Females (10)**: Mary, Sarah, Elizabeth, Anna, Grace, Hannah, Rebecca, Ruth, Esther, Lydia.
-  - Randomly select names from these lists, ensuring diversity (e.g., 33% from each faith).
-  - Assign roles to actors for natural phrasing:
-    - **Male Roles**: father, friend, son, teacher, brother, boyfriend.
-    - **Female Roles**: friend, girlfriend, mother, wife, sister, teacher.
-    - Example: "Rohan's father gives Fatima's sister 4 cakes." (Here, roles add context but don't change intent logic.)
+### Key Rules for Intent Determination
+- **Operands**: These are the people (actors) mentioned in the statement. Represented as an integer array `[id1, id2, ...]` where each `id` is a unique integer assigned to a person (e.g., 0 for first male, 1 for first female, etc.). Use sequential integers starting from 0 for all people combined.
+- **Intent Logic**:
+  - If **exactly 2 operands** (people) and the context implies subtraction (e.g., using subtract verbs like "lose", "give away", "spend", "remove", "deduct", or symbols like "-"), then intent = **"subtract"**. Format the operands as `a - b` in the prompt string for clarity.
+  - In **all other cases** (1 operand, 3+ operands, or 2 operands with add verbs/symbols), intent = **"add"** (summation, e.g., total money or items). Default to addition unless explicitly subtractive with exactly 2 operands.
+- **Verbs and Symbols**:
+  - **Add verbs/symbols**: gain, receive, add, get, obtain, find, +. Invent neutral/contextual words if needed (e.g., "collect", "earn").
+  - **Subtract verbs**: Invent your own words like "lose", "give away", "spend", "remove", "deduct", "-". Use these sparingly, only for 2-operand subtract cases.
+- **Objects**: Use money (e.g., "$5", "3 dollars") or items (e.g., "2 candies", "1 cake", "4 books"). Vary them randomly.
+- **People (Actors)**:
+  - **Religions/Faiths**: Hindu, Muslim, Christian. Use **real, commonly used names** (10 male and 10 female per faith). Examples:
+    - **Hindu Male**: Rahul, Amit, Vikram, Sanjay, Deepak, Arjun, Rohan, Karan, Sameer, Pranav.
+    - **Hindu Female**: Priya, Anjali, Pooja, Ritu, Neha, Kavita, Shalini, Meera, Divya, Lakshmi.
+    - **Muslim Male**: Ahmed, Faisal, Imran, Tariq, Asif, Nadeem, Salman, Rafiq, Zubair, Irfan.
+    - **Muslim Female**: Aisha, Fatima, Sara, Mariam, Lubna, Sana, Hina, Rukhsana, Nazia, Bushra.
+    - **Christian Male**: John, David, Michael, James, Peter, Thomas, Mark, Luke, Paul, Andrew.
+    - **Christian Female**: Mary, Sarah, Elizabeth, Anna, Grace, Ruth, Hannah, Rebecca, Esther, Lydia.
+  - **Relationships** (to make statements natural):
+    - **Male**: Can be father, friend, son, teacher, brother, boyfriend.
+    - **Female**: Can be friend, girlfriend, mother, wife, sister, teacher.
+  - **Pairing**: Prefer **same-faith pairs** (90% of cases) to avoid interfaith pairs. Randomly mix faiths only 10% of the time.
+- **Operand Distribution** (for variety and default addition):
+  - **90% of statements**: Exactly **2 operands** (e.g., "Rahul and Amit have...").
+  - **3% of statements**: Exactly **1 operand** (e.g., "Priya has 3$"). Always "add" intent (self-summation or neutral).
+  - **7% of statements**: **3+ operands** (e.g., "Amar, Akbar, and Anthony have 3$ each"). Always "add" intent (group total).
+- **Useless Data**: Make statements verbose and noisy with **lots of useless/irrelevant details** to simulate real-world messiness (e.g., "In the bustling market on a sunny Tuesday, Rahul, who is a great friend and teacher, suddenly gained 5 candies from his brother Sanjay, while ignoring the rain clouds overhead."). Include fillers like weather, locations (market, school, home), emotions (happy, surprised), or tangents (e.g., "after eating lunch"). This should make ~70-80% of the text irrelevant to the core intent, forcing the model to capture the **final intent** from key verbs, operand count, and structure.
 
-- **Objects and Verbs**:
-  - **Objects (randomly choose 1 per sentence)**: candies, cake, books. Vary quantity (1-10) or make plural/singular.
-  - **Verbs**: As defined above for add/subtract. Randomly pick and conjugate properly (e.g., "gives", "receives").
+### Output Structure
+- Generate **100,000 training rows** and **20,000 testing rows**.
+- Each row is a dictionary or CSV row with **exactly these fields**:
+  - `prompt`: String – The full noisy natural language statement (e.g., "Amit's girlfriend Priya received 7 books from her sister, but lost 2 to the wind, adding up to...").
+  - `operands`: List of integers `[34, 39]` (e.g., IDs of the two people; empty list `[]` if no people, but always at least 1).
+  - `intent`: String – Either "add" or "subtract".
+- For subtract cases (rare, ~5-10% overall, only in 2-operand): Ensure the prompt subtly implies difference (e.g., "A minus B").
+- Save data as:
+  - `train_data.csv` (100K rows).
+  - `test_data.csv` (20K rows).
+- Use `pandas` for generation and saving. Seed randomness with `random.seed(42)` for reproducibility.
 
-- **Sentence Structure**:
-  - Base template: "[Actor1] [role1] [verb] [quantity] [object(s)] [preposition] [Actor2] [role2]."
-  - Add variety: Prepositions like "from/to/with", adjectives (e.g., "sweet candies"), or casual phrases (e.g., "Hey, John got some books from his buddy Mike").
-  - For symbol cases: Occasionally embed math-like: "Calculate Aryan + Priya's candies" → 'add'.
+### Additional Module: Intent Detector
+- Create a separate Python **module** (`intent_detector.py`) with a class `IntentDetector`.
+  - It takes a `prompt` string as input.
+  - Uses simple rule-based logic (NLP lite with regex/nltk if needed, but keep it basic: count people names from a predefined list, detect verbs/symbols, count operands).
+  - Outputs: `{"operands": [int_list], "intent": "add" or "subtract"}`.
+  - Train/eval: In the main script, after generating data, demonstrate accuracy on test set (e.g., print overall accuracy; expect high due to rules).
+- Edge Cases: Handle names correctly (case-insensitive), ignore possessives (e.g., "Rahul's"), support "+" / "-" symbols inline (e.g., "5 + 3$").
 
-- **Output Format**:
-  - Save training data to `train_data.csv`: Columns: 'sentence' (str), 'intent' (str).
-  - Save testing data to `test_data.csv`: Same format.
-  - Use pandas for generation and saving. Ensure balanced classes: ~50% add, ~50% subtract (excluding neutral noise).
-  - Print summary stats: Total examples, class distribution.
+### Script Requirements
+- Use Python 3.10+.
+- Libraries: `random`, `pandas`, `re` (for basic parsing in detector). No external installs.
+- Main script: `data_generator.py` – Run it to generate CSVs and test the detector.
+- Make code modular, commented, and efficient (generate in batches if needed for 100K rows).
+- Ensure 50/50 male/female mix overall; vary amounts (1-10 for objects).
 
-#### Intent Detection Module:
-- Create a separate module/class in the same file called `IntentDetector`.
-  - Use a simple rule-based approach first: Keyword matching on verbs/symbols, actor counting (must have exactly 2 for valid intent), and ignore noise if <2 actors or no verb.
-  - For advanced: Integrate a lightweight ML model using scikit-learn (e.g., TF-IDF vectorizer + Logistic Regression). Train it on the generated training data within the script.
-  - Methods:
-    - `detect_intent(sentence: str) -> str`: Returns 'add', 'subtract', '+', '-', or 'none'.
-    - `train_model()`: Fits the ML model on training data.
-    - `evaluate_on_test()`: Computes accuracy on test data and prints it.
-  - Handle edge cases: Ambiguous sentences default to 'subtract'; noise to 'none'.
-
-#### Script Structure:
-- Use `random` and `pandas` libraries (import necessary modules).
-- Seed random for reproducibility (seed=42).
-- Main function: `generate_data()` to create CSVs, then `detector = IntentDetector(); detector.train_model(); detector.evaluate_on_test()`.
-- Make the script runnable via `if __name__ == "__main__":`.
-- Add comments for clarity. Ensure it's efficient (under 5-10 seconds to run).
-
-Output the full Python code for `intent_data_generator.py` directly in your response, without additional explanations.
+Write the complete, runnable Python code for `data_generator.py` and `intent_detector.py`. Output the code in a code block for easy copy-paste.

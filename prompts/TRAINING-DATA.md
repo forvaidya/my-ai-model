@@ -1,60 +1,63 @@
-# Prompt for Generating Python Script: Intent Detection Data Generator and Classifier Module
+Below is a carefully crafted prompt you can use (e.g., with an AI like Grok or GPT) to generate the desired Python script. This prompt incorporates all your specifications: data generation logic for 100K training and 20K testing samples, intent detection based on operands and verbs/symbols, name lists, relationship/faith rules, objects/verbs, row structure, operand distribution (90% 2 operands, 3% 1 operand, 7% 3+ operands), and the --scale flag for manual inspection. It ensures the script outputs JSON files for training and testing data, includes a separate intent detection module, and handles the "useless data" aspect by generating verbose, natural-language sentences with distractions (e.g., extra descriptive clauses, relationships, contexts) while capturing the final intent.
 
-## Overview
-You are an expert Python developer. Create a comprehensive Python script that generates synthetic training and testing datasets for intent detection in natural language statements involving people (actors) and objects (money or items). The core task is to classify the **intent** of each statement as either **"add"** (for addition/summation) or **"subtract"** (for subtraction/difference), based on the number of operands (people mentioned) and the context.
+Copy-paste this prompt directly into an AI tool to generate the Python file.
 
-### Key Rules for Intent Determination
-- **Operands**: These are the people (actors) mentioned in the statement. Represented as an integer array `[id1, id2, ...]` where each `id` is a unique integer assigned to a person (e.g., 0 for first male, 1 for first female, etc.). Use sequential integers starting from 0 for all people combined.
+---
+
+**Prompt for AI:**
+
+Create a complete, runnable Python script named `generate_intent_data.py` that generates synthetic training and testing data for intent detection in natural language statements about possessions or transactions involving money. The data should simulate "useless" verbose sentences (e.g., with extra details like relationships, contexts, or distractions) but ultimately capture a clear intent of either "add" (default for 1 or 3+ operands, or 2 operands without subtract cues) or "subtract" (only for exactly 2 operands with subtract cues).
+
+### Key Requirements:
+- **Names**: Use exactly these real, commonly used names (10 male and 10 female per faith). No interfaith pairs in statements. Avoid any LGBT combinations (e.g., no same-sex romantic pairs like boyfriend-boyfriend).
+  - **Hindu Male**: Arjun, Rohan, Vikram, Aryan, Karan, Dev, Sameer, Raj, Amit, Mahesh
+  - **Hindu Female**: Priya, Aisha (wait, Aisha is more Muslim—correct to: Priya, Lakshmi, Radha, Sita, Anjali, Pooja, Divya, Meera, Riya, Kavya)
+  - **Muslim Male**: Ahmed, Faisal, Omar, Bilal, Yusuf, Hassan, Tariq, Nadeem, Salman, Zain
+  - **Muslim Female**: Fatima, Ayesha, Sara, Mariam, Layla, Noor, Hina, Sana, Zara, Rubina
+  - **Christian Male**: John, David, Michael, James, Peter, Matthew, Luke, Paul, Mark, Thomas
+  - **Christian Female**: Mary, Sarah, Elizabeth, Anna, Grace, Ruth, Hannah, Rebecca, Esther, Lydia
+- **Relationships**: Males can be: father, friend, son, teacher, brother, boyfriend. Females can be: friend, girlfriend, mother, wife, sister, teacher. Use relationships in sentences for verbosity, but only same-faith pairs (e.g., Hindu male with Hindu female as girlfriend).
+- **Objects**: Use in sentences for context (e.g., "in exchange for candies"): candies, cake, books.
+- **Verbs**:
+  - Add verbs (gain, receive, add, get, obtain, find) or "+" symbol: These trigger "add" intent.
+  - Subtract verbs: Invent your own (e.g., "lose", "give away", "spend", "donate", "sacrifice") or "-" symbol: These trigger "subtract" intent only if exactly 2 operands.
 - **Intent Logic**:
-  - If **exactly 2 operands** (people) and the context implies subtraction (e.g., using subtract verbs like "lose", "give away", "spend", "remove", "deduct", or symbols like "-"), then intent = **"subtract"**. Format the operands as `a - b` in the prompt string for clarity.
-  - In **all other cases** (1 operand, 3+ operands, or 2 operands with add verbs/symbols), intent = **"add"** (summation, e.g., total money or items). Default to addition unless explicitly subtractive with exactly 2 operands.
-- **Verbs and Symbols**:
-  - **Add verbs/symbols**: gain, receive, add, get, obtain, find, +. Invent neutral/contextual words if needed (e.g., "collect", "earn").
-  - **Subtract verbs**: Invent your own words like "lose", "give away", "spend", "remove", "deduct", "-". Use these sparingly, only for 2-operand subtract cases.
-- **Objects**: Use money (e.g., "$5", "3 dollars") or items (e.g., "2 candies", "1 cake", "4 books"). Vary them randomly.
-- **People (Actors)**:
-  - **Religions/Faiths**: Hindu, Muslim, Christian. Use **real, commonly used names** (10 male and 10 female per faith). Examples:
-    - **Hindu Male**: Rahul, Amit, Vikram, Sanjay, Deepak, Arjun, Rohan, Karan, Sameer, Pranav.
-    - **Hindu Female**: Priya, Anjali, Pooja, Ritu, Neha, Kavita, Shalini, Meera, Divya, Lakshmi.
-    - **Muslim Male**: Ahmed, Faisal, Imran, Tariq, Asif, Nadeem, Salman, Rafiq, Zubair, Irfan.
-    - **Muslim Female**: Aisha, Fatima, Sara, Mariam, Lubna, Sana, Hina, Rukhsana, Nazia, Bushra.
-    - **Christian Male**: John, David, Michael, James, Peter, Thomas, Mark, Luke, Paul, Andrew.
-    - **Christian Female**: Mary, Sarah, Elizabeth, Anna, Grace, Ruth, Hannah, Rebecca, Esther, Lydia.
-  - **Relationships** (to make statements natural):
-    - **Male**: Can be father, friend, son, teacher, brother, boyfriend.
-    - **Female**: Can be friend, girlfriend, mother, wife, sister, teacher.
-  - **Pairing**: Prefer **same-faith pairs** (90% of cases) to avoid interfaith pairs. Randomly mix faiths only 10% of the time.
-- **Operand Distribution** (for variety and default addition):
-  - **90% of statements**: Exactly **2 operands** (e.g., "Rahul and Amit have...").
-  - **3% of statements**: Exactly **1 operand** (e.g., "Priya has 3$"). Always "add" intent (self-summation or neutral).
-  - **7% of statements**: **3+ operands** (e.g., "Amar, Akbar, and Anthony have 3$ each"). Always "add" intent (group total).
-- **Useless Data**: Make statements verbose and noisy with **lots of useless/irrelevant details** to simulate real-world messiness (e.g., "In the bustling market on a sunny Tuesday, Rahul, who is a great friend and teacher, suddenly gained 5 candies from his brother Sanjay, while ignoring the rain clouds overhead."). Include fillers like weather, locations (market, school, home), emotions (happy, surprised), or tangents (e.g., "after eating lunch"). This should make ~70-80% of the text irrelevant to the core intent, forcing the model to capture the **final intent** from key verbs, operand count, and structure.
+  - If exactly 2 operands and subtract verb/symbol: Intent = "subtract" (format as "a - b").
+  - In all other cases (1 operand, 3+ operands, or 2 operands with add verb/symbol): Intent = "add" (format as "sum: a, b, ..." listing all operands separated by commas).
+  - Embed intent cues subtly in verbose sentences.
+- **Operand Distribution**:
+  - 90% of statements: Exactly 2 operands (random integers 1-100).
+  - 3% of statements: Exactly 1 operand (e.g., "Mahesh has 34$").
+  - 7% of statements: 3+ operands (3-5 random integers 1-100, e.g., "Amar, Akbar, and Anthony each have 3$ in their pockets").
+- **Sentence Generation**: Make sentences natural and verbose ("useless data") with distractions (e.g., "My friend Arjun, who is a teacher and loves books, gained 34$ from selling candies, while his sister Priya received 39$ as a gift from her boyfriend."). Always end with a clear intent cue. Faith/relationship must match.
+- **Data Structure**: Each row is a dict in JSON format:
+  ```json
+  {
+    "prompt": "string (the full verbose sentence)",
+    "operands": [int array, e.g., [34, 39]]
+  }
+  ```
+  - No explicit "intent" field in data—intent is derived later via the detection module.
+- **Output**:
+  - Generate 100,000 training samples → `training_data.json` (list of dicts).
+  - Generate 20,000 testing samples → `testing_data.json` (list of dicts).
+- **Command-Line Flag**: Add `--scale {1..100}` (int, default 100) to subsample data for manual inspection. E.g., `--scale 10` means randomly select 10% of generated records for both training and testing JSONs.
+- **Intent Detection Module**: Include a separate function/module (e.g., in the same file as `detect_intent(sentence: str, operands: list[int]) -> str`) that:
+  - Parses the sentence for add/subtract verbs or symbols (+/-).
+  - If len(operands) == 2 and subtract cue: Return formatted "a - b".
+  - Else: Return formatted "sum: a, b, ...".
+  - Handles edge cases (e.g., no cue → default "add").
+  - Example usage: Print detected intents for first 5 test samples.
 
-### Output Structure
-- Generate **100,000 training rows** and **20,000 testing rows**.
-- Each row is a dictionary or CSV row with **exactly these fields**:
-  - `prompt`: String – The full noisy natural language statement (e.g., "Amit's girlfriend Priya received 7 books from her sister, but lost 2 to the wind, adding up to...").
-  - `operands`: List of integers `[34, 39]` (e.g., IDs of the two people; empty list `[]` if no people, but always at least 1).
-  - `intent`: String – Either "add" or "subtract".
-- For subtract cases (rare, ~5-10% overall, only in 2-operand): Ensure the prompt subtly implies difference (e.g., "A minus B").
-- Save data as:
-  - `train_data.csv` (100K rows).
-  - `test_data.csv` (20K rows).
-- Use `pandas` for generation and saving. Seed randomness with `random.seed(42)` for reproducibility.
+### Script Structure:
+- Use `argparse` for CLI.
+- Use `random`, `json`, `numpy` (for random sampling if needed).
+- Seed random for reproducibility (e.g., random.seed(42)).
+- Generate full data first, then subsample based on scale.
+- Main: If run with args, generate data; else, demo with small scale=1%.
 
-### Additional Module: Intent Detector
-- Create a separate Python **module** (`intent_detector.py`) with a class `IntentDetector`.
-  - It takes a `prompt` string as input.
-  - Uses simple rule-based logic (NLP lite with regex/nltk if needed, but keep it basic: count people names from a predefined list, detect verbs/symbols, count operands).
-  - Outputs: `{"operands": [int_list], "intent": "add" or "subtract"}`.
-  - Train/eval: In the main script, after generating data, demonstrate accuracy on test set (e.g., print overall accuracy; expect high due to rules).
-- Edge Cases: Handle names correctly (case-insensitive), ignore possessives (e.g., "Rahul's"), support "+" / "-" symbols inline (e.g., "5 + 3$").
+Ensure the script is self-contained, error-free, and under 500 lines. Output the full code.
 
-### Script Requirements
-- Use Python 3.10+.
-- Libraries: `random`, `pandas`, `re` (for basic parsing in detector). No external installs.
-- Main script: `data_generator.py` – Run it to generate CSVs and test the detector.
-- Make code modular, commented, and efficient (generate in batches if needed for 100K rows).
-- Ensure 50/50 male/female mix overall; vary amounts (1-10 for objects).
+---
 
-Write the complete, runnable Python code for `data_generator.py` and `intent_detector.py`. Output the code in a code block for easy copy-paste.
+This prompt is self-contained and dense, so the AI should produce a high-quality script. If you generate the script and run into issues, share the output for debugging!

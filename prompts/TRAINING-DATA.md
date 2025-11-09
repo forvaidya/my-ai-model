@@ -1,9 +1,3 @@
-Below is a carefully crafted prompt you can use (e.g., with an AI like Grok or GPT) to generate the desired Python script. This prompt incorporates all your specifications: data generation logic for 100K training and 20K testing samples, intent detection based on operands and verbs/symbols, name lists, relationship/faith rules, objects/verbs, row structure, operand distribution (90% 2 operands, 3% 1 operand, 7% 3+ operands), and the --scale flag for manual inspection. It ensures the script outputs JSON files for training and testing data, includes a separate intent detection module, and handles the "useless data" aspect by generating verbose, natural-language sentences with distractions (e.g., extra descriptive clauses, relationships, contexts) while capturing the final intent.
-
-Copy-paste this prompt directly into an AI tool to generate the Python file.
-
----
-
 **Prompt for AI:**
 
 Create a complete, runnable Python script named `generate_intent_data.py` that generates synthetic training and testing data for intent detection in natural language statements about possessions or transactions involving money. The data should simulate "useless" verbose sentences (e.g., with extra details like relationships, contexts, or distractions) but ultimately capture a clear intent of either "add" (default for 1 or 3+ operands, or 2 operands without subtract cues) or "subtract" (only for exactly 2 operands with subtract cues).

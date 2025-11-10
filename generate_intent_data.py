@@ -7,7 +7,7 @@ Produces verbose sentences about money transactions with add/subtract intents.
 import argparse
 import json
 import random
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 
 
 # Names by faith (no interfaith pairs)
@@ -114,12 +114,20 @@ def get_same_faith_pair() -> Tuple[str, Dict, Dict]:
     return faith, person1, person2
 
 
-def generate_two_operand_sentence() -> Dict[str, any]:
+def generate_two_operand_sentence() -> Dict[str, Any]:
     """Generate a sentence with exactly 2 operands (90% of data)."""
-    operands = [random.randint(1, 100), random.randint(1, 100)]
+    # Generate two operands
+    amt1 = random.randint(1, 100)
+    amt2 = random.randint(1, 100)
     
     # Decide intent (50/50 add vs subtract for variety)
     is_subtract = random.random() < 0.5
+    
+    # For subtract, ensure first > second
+    if is_subtract and amt1 < amt2:
+        amt1, amt2 = amt2, amt1
+    
+    operands = [amt1, amt2]
     
     faith, person1, person2 = get_same_faith_pair()
     
@@ -151,7 +159,7 @@ def generate_two_operand_sentence() -> Dict[str, any]:
     return {'prompt': sentence, 'operands': operands}
 
 
-def generate_single_operand_sentence() -> Dict[str, any]:
+def generate_single_operand_sentence() -> Dict[str, Any]:
     """Generate a sentence with exactly 1 operand (3% of data)."""
     operands = [random.randint(1, 100)]
     
@@ -173,7 +181,7 @@ def generate_single_operand_sentence() -> Dict[str, any]:
     return {'prompt': sentence, 'operands': operands}
 
 
-def generate_multi_operand_sentence() -> Dict[str, any]:
+def generate_multi_operand_sentence() -> Dict[str, Any]:
     """Generate a sentence with 3-5 operands (7% of data)."""
     num_operands = random.randint(3, 5)
     operands = [random.randint(1, 100) for _ in range(num_operands)]
@@ -200,8 +208,14 @@ def generate_multi_operand_sentence() -> Dict[str, any]:
     return {'prompt': sentence, 'operands': operands}
 
 
-def generate_dataset(num_samples: int) -> List[Dict]:
-    """Generate dataset with specified distribution of operand counts."""
+def generate_dataset(num_samples: int, include_intent: bool = True) -> List[Dict]:
+    """Generate dataset with specified distribution of operand counts.
+    
+    Args:
+        num_samples: Number of samples to generate
+        include_intent: If True, include 'intent' and 'operands' fields (for training).
+                       If False, only include 'prompt' field (for testing).
+    """
     dataset = []
     
     # Calculate counts based on distribution
@@ -222,6 +236,14 @@ def generate_dataset(num_samples: int) -> List[Dict]:
     # Shuffle to mix operand types
     random.shuffle(dataset)
     
+    # Add intent field for training data, or remove fields for testing data
+    if include_intent:
+        for sample in dataset:
+            sample['intent'] = detect_intent(sample['prompt'], sample['operands'])
+    else:
+        # Testing data: only keep the prompt
+        dataset = [{'prompt': sample['prompt']} for sample in dataset]
+    
     return dataset
 
 
@@ -239,10 +261,10 @@ def main():
     testing_count = int(20000 * args.scale / 100)
     
     print(f"Generating {training_count} training samples...")
-    training_data = generate_dataset(training_count)
+    training_data = generate_dataset(training_count, include_intent=True)
     
     print(f"Generating {testing_count} testing samples...")
-    testing_data = generate_dataset(testing_count)
+    testing_data = generate_dataset(testing_count, include_intent=False)
     
     # Save to JSON files
     with open('training_data.json', 'w') as f:
@@ -253,14 +275,13 @@ def main():
         json.dump(testing_data, f, indent=2)
     print(f"Saved testing_data.json ({len(testing_data)} samples)")
     
-    # Demo: Show intent detection for first 5 test samples
-    print("\n=== Intent Detection Demo (First 5 Test Samples) ===")
-    for i, sample in enumerate(testing_data[:5], 1):
-        intent = detect_intent(sample['prompt'], sample['operands'])
+    # Demo: Show intent detection for first 5 training samples
+    print("\n=== Intent Detection Demo (First 5 Training Samples) ===")
+    for i, sample in enumerate(training_data[:5], 1):
         print(f"\nSample {i}:")
         print(f"  Prompt: {sample['prompt']}")
         print(f"  Operands: {sample['operands']}")
-        print(f"  Detected Intent: {intent}")
+        print(f"  Intent: {sample['intent']}")
 
 
 if __name__ == '__main__':

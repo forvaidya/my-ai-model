@@ -34,6 +34,8 @@ Create a complete, runnable Python script named `generate_intent_data.py` that g
   ```
   - Find and describe the intent of each sentence using the provided intent logic in the training data. But NOT in testing data. In testing data the intent and operands are hidden and must be detected by the model.
   Try to give first number > second number as we are also training the model on subtract. 
+
+  - First operand should always be positive example - had, possessed, saved, held. Dont use negative examples - lost, spent, given, donated, sacrificed.
 - **Output**:
   - Generate 100,000 training samples → `training_data.json` (list of dicts).
   - Generate 20,000 testing samples → `testing_data.json` (list of dicts).

@@ -29,9 +29,11 @@ Create a complete, runnable Python script named `generate_intent_data.py` that g
   {
     "prompt": "string (the full verbose sentence)",
     "operands": [int array, e.g., [34, 39]]
+    "intent": "string (either 'subtract' or 'sum: a, b, ...')"
   }
   ```
-  - No explicit "intent" field in data—intent is derived later via the detection module.
+  - Find and describe the intent of each sentence using the provided intent logic in the training data. But NOT in testing data. In testing data the intent and operands are hidden and must be detected by the model.
+  Try to give first number > second number as we are also training the model on subtract. 
 - **Output**:
   - Generate 100,000 training samples → `training_data.json` (list of dicts).
   - Generate 20,000 testing samples → `testing_data.json` (list of dicts).

@@ -1,0 +1,1824 @@
+[
+  {
+    "prompt": "Priya had 18 books, and his friend Radha helped him collect 52 more.",
+    "operands": [
+      18,
+      52
+    ],
+    "intent": "add",
+    "result": 70
+  },
+  {
+    "prompt": "Rebecca had 46 marbles, then donate 40 to charity.",
+    "operands": [
+      46,
+      40
+    ],
+    "intent": "subtract",
+    "result": 6
+  },
+  {
+    "prompt": "Anna had 97 books, and later find 72 from Rebecca.",
+    "operands": [
+      97,
+      72
+    ],
+    "intent": "add",
+    "result": 169
+  },
+  {
+    "prompt": "Pooja had $45 dollars, and later waste $62 as a donation.",
+    "operands": [
+      45,
+      62
+    ],
+    "intent": "subtract",
+    "result": -17
+  },
+  {
+    "prompt": "Kareem had 43 cake, then Salman gave him 53 more.",
+    "operands": [
+      43,
+      53
+    ],
+    "intent": "add",
+    "result": 96
+  },
+  {
+    "prompt": "Thomas had ₹78 rupees, then Anthony gave him ₹70 more.",
+    "operands": [
+      78,
+      70
+    ],
+    "intent": "add",
+    "result": 148
+  },
+  {
+    "prompt": "Matthew had ₹10 rupees, and later add ₹79 from George.",
+    "operands": [
+      10,
+      79
+    ],
+    "intent": "add",
+    "result": 89
+  },
+  {
+    "prompt": "Zaid had $66 dollars, but forfeit $25 on something.",
+    "operands": [
+      66,
+      25
+    ],
+    "intent": "subtract",
+    "result": 41
+  },
+  {
+    "prompt": "Imran had 36 books, then burn 18 to charity.",
+    "operands": [
+      36,
+      18
+    ],
+    "intent": "subtract",
+    "result": 18
+  },
+  {
+    "prompt": "Maryam had $78 dollars, and later hand over $58 as a donation.",
+    "operands": [
+      78,
+      58
+    ],
+    "intent": "subtract",
+    "result": 20
+  },
+  {
+    "prompt": "Rebecca had 18 marbles, but waste 44 on something.",
+    "operands": [
+      18,
+      44
+    ],
+    "intent": "subtract",
+    "result": -26
+  },
+  {
+    "prompt": "Pooja had ₹69 rupees, then discard ₹11 to charity.",
+    "operands": [
+      69,
+      11
+    ],
+    "intent": "subtract",
+    "result": 58
+  },
+  {
+    "prompt": "Vikram had 32 marbles, and his father Pooja helped him find 20 more.",
+    "operands": [
+      32,
+      20
+    ],
+    "intent": "add",
+    "result": 52
+  },
+  {
+    "prompt": "Yusuf had 94 candies, but hand over 78 on something.",
+    "operands": [
+      94,
+      78
+    ],
+    "intent": "subtract",
+    "result": 16
+  },
+  {
+    "prompt": "Sita had 51 marbles, and later collect 90 from Siddharth.",
+    "operands": [
+      51,
+      90
+    ],
+    "intent": "add",
+    "result": 141
+  },
+  {
+    "prompt": "Rebecca had 33 marbles, and his girlfriend Elizabeth helped him earn 93 more.",
+    "operands": [
+      33,
+      93
+    ],
+    "intent": "add",
+    "result": 126
+  },
+  {
+    "prompt": "Noor had 31 books, then transfer 41 to charity.",
+    "operands": [
+      31,
+      41
+    ],
+    "intent": "subtract",
+    "result": -10
+  },
+  {
+    "prompt": "Samuel had 89 books, then spend 68 to charity.",
+    "operands": [
+      89,
+      68
+    ],
+    "intent": "subtract",
+    "result": 21
+  },
+  {
+    "prompt": "Krishna had 50 marbles, but relinquish 84 on something.",
+    "operands": [
+      50,
+      84
+    ],
+    "intent": "subtract",
+    "result": -34
+  },
+  {
+    "prompt": "Imran had $21 dollars, and later discard $65 as a donation.",
+    "operands": [
+      21,
+      65
+    ],
+    "intent": "subtract",
+    "result": -44
+  },
+  {
+    "prompt": "David had 54 marbles, then lose 54 to charity.",
+    "operands": [
+      54,
+      54
+    ],
+    "intent": "subtract",
+    "result": 0
+  },
+  {
+    "prompt": "Grace had 56 books, and his daughter George helped him secure 71 more.",
+    "operands": [
+      56,
+      71
+    ],
+    "intent": "add",
+    "result": 127
+  },
+  {
+    "prompt": "Faisal had 3 candies, then found another 79.",
+    "operands": [
+      3,
+      79
+    ],
+    "intent": "add",
+    "result": 82
+  },
+  {
+    "prompt": "Kareem had 34 marbles, but gave 80 to Fatima.",
+    "operands": [
+      34,
+      80
+    ],
+    "intent": "subtract",
+    "result": -46
+  },
+  {
+    "prompt": "Teresa had 91 cake, then found another 99.",
+    "operands": [
+      91,
+      99
+    ],
+    "intent": "add",
+    "result": 190
+  },
+  {
+    "prompt": "Samuel had 47 cake, then transferred 86 to David's account.",
+    "operands": [
+      47,
+      86
+    ],
+    "intent": "subtract",
+    "result": -39
+  },
+  {
+    "prompt": "Zaid had $95 dollars, but spend $23 on something.",
+    "operands": [
+      95,
+      23
+    ],
+    "intent": "subtract",
+    "result": 72
+  },
+  {
+    "prompt": "Arjun had 8 cake, but burn 27 on something.",
+    "operands": [
+      8,
+      27
+    ],
+    "intent": "subtract",
+    "result": -19
+  },
+  {
+    "prompt": "Thomas had 29 books, then Peter gave him 8, Grace gave him 43, Joseph gave him 36, Teresa gave him 5 and Maria gave him 22.",
+    "operands": [
+      29,
+      8,
+      43,
+      36,
+      5,
+      22
+    ],
+    "intent": "add",
+    "result": 143
+  },
+  {
+    "prompt": "Dev had 29 cake, then found another 76.",
+    "operands": [
+      29,
+      76
+    ],
+    "intent": "add",
+    "result": 105
+  },
+  {
+    "prompt": "David had ₹69 rupees, then received ₹41 as a gift.",
+    "operands": [
+      69,
+      41
+    ],
+    "intent": "add",
+    "result": 110
+  },
+  {
+    "prompt": "Mustafa had 74 candies, and his father Noor helped him collect 44 more.",
+    "operands": [
+      74,
+      44
+    ],
+    "intent": "add",
+    "result": 118
+  },
+  {
+    "prompt": "Amar had 40 cake, and later gain 10, 10 from Siddharth, Kavya respectively.",
+    "operands": [
+      40,
+      10,
+      10
+    ],
+    "intent": "add",
+    "result": 60
+  },
+  {
+    "prompt": "Anna had 12 books, then Rachel gave him 11, George gave him 26, Grace gave him 44, Jacob gave him 34 and Elizabeth gave him 7.",
+    "operands": [
+      12,
+      11,
+      26,
+      44,
+      34,
+      7
+    ],
+    "intent": "add",
+    "result": 134
+  },
+  {
+    "prompt": "Krishna had ₹37 rupees, then Sita gave him ₹49, Arjun gave him ₹9 and Rohan gave him ₹9.",
+    "operands": [
+      37,
+      49,
+      9,
+      9
+    ],
+    "intent": "add",
+    "result": 104
+  },
+  {
+    "prompt": "Paul had 75 cake, then received 52 as a gift.",
+    "operands": [
+      75,
+      52
+    ],
+    "intent": "add",
+    "result": 127
+  },
+  {
+    "prompt": "Neha had 40 books, then received 43 as a gift.",
+    "operands": [
+      40,
+      43
+    ],
+    "intent": "add",
+    "result": 83
+  },
+  {
+    "prompt": "Meera had $24 dollars, then found another $25.",
+    "operands": [
+      24,
+      25
+    ],
+    "intent": "add",
+    "result": 49
+  },
+  {
+    "prompt": "Dev had 37 candies, and his brother Lakshmi helped him secure 74 more.",
+    "operands": [
+      37,
+      74
+    ],
+    "intent": "add",
+    "result": 111
+  },
+  {
+    "prompt": "Peter had 8 marbles, and his teacher Hannah helped him gain 38 more.",
+    "operands": [
+      8,
+      38
+    ],
+    "intent": "add",
+    "result": 46
+  },
+  {
+    "prompt": "Matthew had 76 marbles, then received 4 as a gift.",
+    "operands": [
+      76,
+      4
+    ],
+    "intent": "add",
+    "result": 80
+  },
+  {
+    "prompt": "Lakshmi had 24 cake, then transferred 97 to Amar's account.",
+    "operands": [
+      24,
+      97
+    ],
+    "intent": "subtract",
+    "result": -73
+  },
+  {
+    "prompt": "Radha had ₹72 rupees, but gave ₹8 to Priya.",
+    "operands": [
+      72,
+      8
+    ],
+    "intent": "subtract",
+    "result": 64
+  },
+  {
+    "prompt": "Kavya had 33 candies, but forfeit 46 on something.",
+    "operands": [
+      33,
+      46
+    ],
+    "intent": "subtract",
+    "result": -13
+  },
+  {
+    "prompt": "Yusuf had $23 dollars, but transfer $11 on something.",
+    "operands": [
+      23,
+      11
+    ],
+    "intent": "subtract",
+    "result": 12
+  },
+  {
+    "prompt": "Grace had 85 books, and his girlfriend Teresa helped him gain 19 more.",
+    "operands": [
+      85,
+      19
+    ],
+    "intent": "add",
+    "result": 104
+  },
+  {
+    "prompt": "Kavya owns 73 books.",
+    "operands": [
+      73
+    ],
+    "intent": "add",
+    "result": 73
+  },
+  {
+    "prompt": "Jacob has 82 cake.",
+    "operands": [
+      82
+    ],
+    "intent": "add",
+    "result": 82
+  },
+  {
+    "prompt": "Matthew had ₹51 rupees, but contribute ₹29 on something.",
+    "operands": [
+      51,
+      29
+    ],
+    "intent": "subtract",
+    "result": 22
+  },
+  {
+    "prompt": "Hafsa had 91 marbles, then contribute 63 to charity.",
+    "operands": [
+      91,
+      63
+    ],
+    "intent": "subtract",
+    "result": 28
+  },
+  {
+    "prompt": "Amira had 97 candies, and later add 51 from Faisal.",
+    "operands": [
+      97,
+      51
+    ],
+    "intent": "add",
+    "result": 148
+  },
+  {
+    "prompt": "David had ₹94 rupees, then burn ₹28 to charity.",
+    "operands": [
+      94,
+      28
+    ],
+    "intent": "subtract",
+    "result": 66
+  },
+  {
+    "prompt": "Layla had 66 cake, but gave 17 to Kareem.",
+    "operands": [
+      66,
+      17
+    ],
+    "intent": "subtract",
+    "result": 49
+  },
+  {
+    "prompt": "Pooja had ₹35 rupees, and his daughter Kavya helped him obtain ₹12 more.",
+    "operands": [
+      35,
+      12
+    ],
+    "intent": "add",
+    "result": 47
+  },
+  {
+    "prompt": "Vikram had $38 dollars, then transferred $48 to Amar's account.",
+    "operands": [
+      38,
+      48
+    ],
+    "intent": "subtract",
+    "result": -10
+  },
+  {
+    "prompt": "Maryam had 89 cake, and later collect 17 from Kareem.",
+    "operands": [
+      89,
+      17
+    ],
+    "intent": "add",
+    "result": 106
+  },
+  {
+    "prompt": "Siddharth found 62 books.",
+    "operands": [
+      62
+    ],
+    "intent": "add",
+    "result": 62
+  },
+  {
+    "prompt": "Teresa had ₹86 rupees, then David gave him ₹49 more.",
+    "operands": [
+      86,
+      49
+    ],
+    "intent": "add",
+    "result": 135
+  },
+  {
+    "prompt": "Meera had 56 books, but donate 84 on something.",
+    "operands": [
+      56,
+      84
+    ],
+    "intent": "subtract",
+    "result": -28
+  },
+  {
+    "prompt": "Akbar had 68 cake, then received 25 as a gift.",
+    "operands": [
+      68,
+      25
+    ],
+    "intent": "add",
+    "result": 93
+  },
+  {
+    "prompt": "Fatima had 26 cake, and his sister Hafsa helped him receive 30 more.",
+    "operands": [
+      26,
+      30
+    ],
+    "intent": "add",
+    "result": 56
+  },
+  {
+    "prompt": "Thomas had 2 marbles, and later receive 75 from Maria.",
+    "operands": [
+      2,
+      75
+    ],
+    "intent": "add",
+    "result": 77
+  },
+  {
+    "prompt": "Imran had ₹55 rupees, then Zaid gave him ₹100 more.",
+    "operands": [
+      55,
+      100
+    ],
+    "intent": "add",
+    "result": 155
+  },
+  {
+    "prompt": "Imran had 77 candies, then found another 85.",
+    "operands": [
+      77,
+      85
+    ],
+    "intent": "add",
+    "result": 162
+  },
+  {
+    "prompt": "Priya had 63 marbles, then received 89 as a gift.",
+    "operands": [
+      63,
+      89
+    ],
+    "intent": "add",
+    "result": 152
+  },
+  {
+    "prompt": "Amira had ₹3 rupees, then Hafsa gave him ₹64 more.",
+    "operands": [
+      3,
+      64
+    ],
+    "intent": "add",
+    "result": 67
+  },
+  {
+    "prompt": "George had 34 candies, and his teacher Hannah helped him get 79 more.",
+    "operands": [
+      34,
+      79
+    ],
+    "intent": "add",
+    "result": 113
+  },
+  {
+    "prompt": "Vivek had ₹3 rupees, but gave ₹42 to Dev.",
+    "operands": [
+      3,
+      42
+    ],
+    "intent": "subtract",
+    "result": -39
+  },
+  {
+    "prompt": "Aryan had ₹13 rupees, then received ₹95 as a gift.",
+    "operands": [
+      13,
+      95
+    ],
+    "intent": "add",
+    "result": 108
+  },
+  {
+    "prompt": "Priya had ₹88 rupees, but gave ₹59 to Amar.",
+    "operands": [
+      88,
+      59
+    ],
+    "intent": "subtract",
+    "result": 29
+  },
+  {
+    "prompt": "Sana had 52 candies, and later transfer 8 as a donation.",
+    "operands": [
+      52,
+      8
+    ],
+    "intent": "subtract",
+    "result": 44
+  },
+  {
+    "prompt": "Joseph had 86 cake, then received 63 as a gift.",
+    "operands": [
+      86,
+      63
+    ],
+    "intent": "add",
+    "result": 149
+  },
+  {
+    "prompt": "Zainab had ₹95 rupees, then Faisal gave him ₹94 more.",
+    "operands": [
+      95,
+      94
+    ],
+    "intent": "add",
+    "result": 189
+  },
+  {
+    "prompt": "Rachel had ₹7 rupees, then transferred ₹67 to Paul's account.",
+    "operands": [
+      7,
+      67
+    ],
+    "intent": "subtract",
+    "result": -60
+  },
+  {
+    "prompt": "Mustafa had $46 dollars, but gave $2 to Omar.",
+    "operands": [
+      46,
+      2
+    ],
+    "intent": "subtract",
+    "result": 44
+  },
+  {
+    "prompt": "Anna had 77 books, and his friend Rebecca helped him find 35 more.",
+    "operands": [
+      77,
+      35
+    ],
+    "intent": "add",
+    "result": 112
+  },
+  {
+    "prompt": "Peter had 7 books, then pay 59 to charity.",
+    "operands": [
+      7,
+      59
+    ],
+    "intent": "subtract",
+    "result": -52
+  },
+  {
+    "prompt": "Teresa had 98 marbles, and his daughter Thomas helped him earn 3 more.",
+    "operands": [
+      98,
+      3
+    ],
+    "intent": "add",
+    "result": 101
+  },
+  {
+    "prompt": "Radha had 73 cake, and later lend 47 as a donation.",
+    "operands": [
+      73,
+      47
+    ],
+    "intent": "subtract",
+    "result": 26
+  },
+  {
+    "prompt": "Sophia had ₹60 rupees, then found another ₹27.",
+    "operands": [
+      60,
+      27
+    ],
+    "intent": "add",
+    "result": 87
+  },
+  {
+    "prompt": "Sana had 85 cake, then Omar gave him 19 more.",
+    "operands": [
+      85,
+      19
+    ],
+    "intent": "add",
+    "result": 104
+  },
+  {
+    "prompt": "Zaid had 30 candies, and later spend 58 as a donation.",
+    "operands": [
+      30,
+      58
+    ],
+    "intent": "subtract",
+    "result": -28
+  },
+  {
+    "prompt": "Radha had 55 cake, then transferred 75 to Vivek's account.",
+    "operands": [
+      55,
+      75
+    ],
+    "intent": "subtract",
+    "result": -20
+  },
+  {
+    "prompt": "Amar had $69 dollars, and later receive $48 from Meera.",
+    "operands": [
+      69,
+      48
+    ],
+    "intent": "add",
+    "result": 117
+  },
+  {
+    "prompt": "Dev had ₹78 rupees, but gave ₹43 to Rahul.",
+    "operands": [
+      78,
+      43
+    ],
+    "intent": "subtract",
+    "result": 35
+  },
+  {
+    "prompt": "Krishna had 34 books, then transferred 12 to Kavya's account.",
+    "operands": [
+      34,
+      12
+    ],
+    "intent": "subtract",
+    "result": 22
+  },
+  {
+    "prompt": "Priya had 66 candies, then transferred 97 to Rahul's account.",
+    "operands": [
+      66,
+      97
+    ],
+    "intent": "subtract",
+    "result": -31
+  },
+  {
+    "prompt": "Lakshmi had ₹3 rupees, and his teacher Vikram helped him collect ₹18 more.",
+    "operands": [
+      3,
+      18
+    ],
+    "intent": "add",
+    "result": 21
+  },
+  {
+    "prompt": "Anna had $56 dollars, and his girlfriend Joseph helped him get $91 more.",
+    "operands": [
+      56,
+      91
+    ],
+    "intent": "add",
+    "result": 147
+  },
+  {
+    "prompt": "Amira had 41 candies, then transferred 45 to Maryam's account.",
+    "operands": [
+      41,
+      45
+    ],
+    "intent": "subtract",
+    "result": -4
+  },
+  {
+    "prompt": "David had 87 cake, and his teacher Maria helped him gain 91 more.",
+    "operands": [
+      87,
+      91
+    ],
+    "intent": "add",
+    "result": 178
+  },
+  {
+    "prompt": "Rohan had ₹55 rupees, then discard ₹86 to charity.",
+    "operands": [
+      55,
+      86
+    ],
+    "intent": "subtract",
+    "result": -31
+  },
+  {
+    "prompt": "Rachel had 63 cake, and later spend 99 as a donation.",
+    "operands": [
+      63,
+      99
+    ],
+    "intent": "subtract",
+    "result": -36
+  },
+  {
+    "prompt": "Krishna had 88 books, and later receive 24 from Riya.",
+    "operands": [
+      88,
+      24
+    ],
+    "intent": "add",
+    "result": 112
+  },
+  {
+    "prompt": "Lakshmi had 33 candies, but lend 15 on something.",
+    "operands": [
+      33,
+      15
+    ],
+    "intent": "subtract",
+    "result": 18
+  },
+  {
+    "prompt": "Paul had ₹7 rupees, and later acquire ₹26, ₹14 from Peter, Jacob respectively.",
+    "operands": [
+      7,
+      26,
+      14
+    ],
+    "intent": "add",
+    "result": 47
+  },
+  {
+    "prompt": "George had $3 dollars, then found another $26.",
+    "operands": [
+      3,
+      26
+    ],
+    "intent": "add",
+    "result": 29
+  },
+  {
+    "prompt": "Anna had 20 books, and later gain 61 from George.",
+    "operands": [
+      20,
+      61
+    ],
+    "intent": "add",
+    "result": 81
+  },
+  {
+    "prompt": "Lakshmi had 58 books, then squander 87 to charity.",
+    "operands": [
+      58,
+      87
+    ],
+    "intent": "subtract",
+    "result": -29
+  },
+  {
+    "prompt": "Anthony had 28 books, then transferred 98 to Maria's account.",
+    "operands": [
+      28,
+      98
+    ],
+    "intent": "subtract",
+    "result": -70
+  },
+  {
+    "prompt": "Sophia had 48 books, then discard 73 to charity.",
+    "operands": [
+      48,
+      73
+    ],
+    "intent": "subtract",
+    "result": -25
+  },
+  {
+    "prompt": "Zainab had $94 dollars, and later donate $68 as a donation.",
+    "operands": [
+      94,
+      68
+    ],
+    "intent": "subtract",
+    "result": 26
+  },
+  {
+    "prompt": "Aryan had 60 candies, and his brother Siddharth helped him collect 79 more.",
+    "operands": [
+      60,
+      79
+    ],
+    "intent": "add",
+    "result": 139
+  },
+  {
+    "prompt": "Omar had $95 dollars, but discard $35 on something.",
+    "operands": [
+      95,
+      35
+    ],
+    "intent": "subtract",
+    "result": 60
+  },
+  {
+    "prompt": "Aryan has 56 books.",
+    "operands": [
+      56
+    ],
+    "intent": "add",
+    "result": 56
+  },
+  {
+    "prompt": "Rohan had 64 candies, then transferred 94 to Krishna's account.",
+    "operands": [
+      64,
+      94
+    ],
+    "intent": "subtract",
+    "result": -30
+  },
+  {
+    "prompt": "Kareem had $42 dollars, then Mustafa gave him $6 more.",
+    "operands": [
+      42,
+      6
+    ],
+    "intent": "add",
+    "result": 48
+  },
+  {
+    "prompt": "Akbar had 16 cake, but spend 22 on something.",
+    "operands": [
+      16,
+      22
+    ],
+    "intent": "subtract",
+    "result": -6
+  },
+  {
+    "prompt": "Salman owns 9 marbles.",
+    "operands": [
+      9
+    ],
+    "intent": "add",
+    "result": 9
+  },
+  {
+    "prompt": "Yusuf had 96 marbles, and later waste 1 as a donation.",
+    "operands": [
+      96,
+      1
+    ],
+    "intent": "subtract",
+    "result": 95
+  },
+  {
+    "prompt": "Ahmed had 86 books, then Salman gave him 40 more.",
+    "operands": [
+      86,
+      40
+    ],
+    "intent": "add",
+    "result": 126
+  },
+  {
+    "prompt": "Rahul had 45 marbles, but throw away 94 on something.",
+    "operands": [
+      45,
+      94
+    ],
+    "intent": "subtract",
+    "result": -49
+  },
+  {
+    "prompt": "Anjali had 78 cake, and his teacher Vikram helped him find 100 more.",
+    "operands": [
+      78,
+      100
+    ],
+    "intent": "add",
+    "result": 178
+  },
+  {
+    "prompt": "Matthew had $65 dollars, then transferred $41 to Sarah's account.",
+    "operands": [
+      65,
+      41
+    ],
+    "intent": "subtract",
+    "result": 24
+  },
+  {
+    "prompt": "Paul had 85 books, then George gave him 74 more.",
+    "operands": [
+      85,
+      74
+    ],
+    "intent": "add",
+    "result": 159
+  },
+  {
+    "prompt": "Yusuf had 71 marbles, and later spend 54 as a donation.",
+    "operands": [
+      71,
+      54
+    ],
+    "intent": "subtract",
+    "result": 17
+  },
+  {
+    "prompt": "Jacob had ₹36 rupees, but misplace ₹14 on something.",
+    "operands": [
+      36,
+      14
+    ],
+    "intent": "subtract",
+    "result": 22
+  },
+  {
+    "prompt": "Ahmed had 57 books, but gave 29 to Omar.",
+    "operands": [
+      57,
+      29
+    ],
+    "intent": "subtract",
+    "result": 28
+  },
+  {
+    "prompt": "Rachel had ₹76 rupees, and his girlfriend Samuel helped him acquire ₹78 more.",
+    "operands": [
+      76,
+      78
+    ],
+    "intent": "add",
+    "result": 154
+  },
+  {
+    "prompt": "Meera had ₹30 rupees, but donate ₹41 on something.",
+    "operands": [
+      30,
+      41
+    ],
+    "intent": "subtract",
+    "result": -11
+  },
+  {
+    "prompt": "Thomas had 57 marbles, and later acquire 39 from Jacob.",
+    "operands": [
+      57,
+      39
+    ],
+    "intent": "add",
+    "result": 96
+  },
+  {
+    "prompt": "Siddharth had ₹97 rupees, then received ₹28 as a gift.",
+    "operands": [
+      97,
+      28
+    ],
+    "intent": "add",
+    "result": 125
+  },
+  {
+    "prompt": "Dev had 66 candies, and later donate 61 as a donation.",
+    "operands": [
+      66,
+      61
+    ],
+    "intent": "subtract",
+    "result": 5
+  },
+  {
+    "prompt": "Neha had $50 dollars, and later add $11, $14, $36, $50 from Pooja, Radha, Priya, Sita respectively.",
+    "operands": [
+      50,
+      11,
+      14,
+      36,
+      50
+    ],
+    "intent": "add",
+    "result": 161
+  },
+  {
+    "prompt": "Joseph had 33 marbles, then Elizabeth gave him 17 more.",
+    "operands": [
+      33,
+      17
+    ],
+    "intent": "add",
+    "result": 50
+  },
+  {
+    "prompt": "Priya had 21 cake, then received 42 as a gift.",
+    "operands": [
+      21,
+      42
+    ],
+    "intent": "add",
+    "result": 63
+  },
+  {
+    "prompt": "Sita had $41 dollars, then Pooja gave him $25 more.",
+    "operands": [
+      41,
+      25
+    ],
+    "intent": "add",
+    "result": 66
+  },
+  {
+    "prompt": "Ahmed had 64 marbles, then Imran gave him 34 more.",
+    "operands": [
+      64,
+      34
+    ],
+    "intent": "add",
+    "result": 98
+  },
+  {
+    "prompt": "Aryan had 66 books, but drop 15 on something.",
+    "operands": [
+      66,
+      15
+    ],
+    "intent": "subtract",
+    "result": 51
+  },
+  {
+    "prompt": "Mustafa had ₹85 rupees, and later obtain ₹34 from Amira.",
+    "operands": [
+      85,
+      34
+    ],
+    "intent": "add",
+    "result": 119
+  },
+  {
+    "prompt": "Omar had $36 dollars, and later forfeit $18 as a donation.",
+    "operands": [
+      36,
+      18
+    ],
+    "intent": "subtract",
+    "result": 18
+  },
+  {
+    "prompt": "Aryan had 6 marbles, but gave 21 to Radha.",
+    "operands": [
+      6,
+      21
+    ],
+    "intent": "subtract",
+    "result": -15
+  },
+  {
+    "prompt": "Joseph had 82 books, and later lose 41 as a donation.",
+    "operands": [
+      82,
+      41
+    ],
+    "intent": "subtract",
+    "result": 41
+  },
+  {
+    "prompt": "Ahmed had ₹24 rupees, then transferred ₹61 to Mustafa's account.",
+    "operands": [
+      24,
+      61
+    ],
+    "intent": "subtract",
+    "result": -37
+  },
+  {
+    "prompt": "Matthew had 36 candies, then misplace 25 to charity.",
+    "operands": [
+      36,
+      25
+    ],
+    "intent": "subtract",
+    "result": 11
+  },
+  {
+    "prompt": "Amira had 39 marbles, and later add 79 from Omar.",
+    "operands": [
+      39,
+      79
+    ],
+    "intent": "add",
+    "result": 118
+  },
+  {
+    "prompt": "Arjun had ₹63 rupees, but drop ₹76 on something.",
+    "operands": [
+      63,
+      76
+    ],
+    "intent": "subtract",
+    "result": -13
+  },
+  {
+    "prompt": "Akbar had ₹69 rupees, then received ₹73 as a gift.",
+    "operands": [
+      69,
+      73
+    ],
+    "intent": "add",
+    "result": 142
+  },
+  {
+    "prompt": "Elizabeth had 41 cake, then drop 85 to charity.",
+    "operands": [
+      41,
+      85
+    ],
+    "intent": "subtract",
+    "result": -44
+  },
+  {
+    "prompt": "Matthew had 4 cake, but forfeit 27 on something.",
+    "operands": [
+      4,
+      27
+    ],
+    "intent": "subtract",
+    "result": -23
+  },
+  {
+    "prompt": "Omar had $56 dollars, and later lend $86 as a donation.",
+    "operands": [
+      56,
+      86
+    ],
+    "intent": "subtract",
+    "result": -30
+  },
+  {
+    "prompt": "Peter had ₹63 rupees, then Rebecca gave him ₹23 more.",
+    "operands": [
+      63,
+      23
+    ],
+    "intent": "add",
+    "result": 86
+  },
+  {
+    "prompt": "Mustafa had 62 candies, and later discard 85 as a donation.",
+    "operands": [
+      62,
+      85
+    ],
+    "intent": "subtract",
+    "result": -23
+  },
+  {
+    "prompt": "Sophia had 43 marbles, then found another 82.",
+    "operands": [
+      43,
+      82
+    ],
+    "intent": "add",
+    "result": 125
+  },
+  {
+    "prompt": "Aryan had 36 cake, then forfeit 4 to charity.",
+    "operands": [
+      36,
+      4
+    ],
+    "intent": "subtract",
+    "result": 32
+  },
+  {
+    "prompt": "Noor had 57 marbles, but give away 55 on something.",
+    "operands": [
+      57,
+      55
+    ],
+    "intent": "subtract",
+    "result": 2
+  },
+  {
+    "prompt": "Dev had 49 candies, then Meera gave him 4 more.",
+    "operands": [
+      49,
+      4
+    ],
+    "intent": "add",
+    "result": 53
+  },
+  {
+    "prompt": "Siddharth found 43 books.",
+    "operands": [
+      43
+    ],
+    "intent": "add",
+    "result": 43
+  },
+  {
+    "prompt": "Priya had 21 cake, but lend 98 on something.",
+    "operands": [
+      21,
+      98
+    ],
+    "intent": "subtract",
+    "result": -77
+  },
+  {
+    "prompt": "Rebecca had 34 candies, and later receive 98 from Teresa.",
+    "operands": [
+      34,
+      98
+    ],
+    "intent": "add",
+    "result": 132
+  },
+  {
+    "prompt": "Vivek had $13 dollars, then received $49 as a gift.",
+    "operands": [
+      13,
+      49
+    ],
+    "intent": "add",
+    "result": 62
+  },
+  {
+    "prompt": "Zaid had 28 marbles, then received 59 as a gift.",
+    "operands": [
+      28,
+      59
+    ],
+    "intent": "add",
+    "result": 87
+  },
+  {
+    "prompt": "Maria had 12 cake, then transferred 67 to Paul's account.",
+    "operands": [
+      12,
+      67
+    ],
+    "intent": "subtract",
+    "result": -55
+  },
+  {
+    "prompt": "Vikram had $24 dollars, and later receive $69 from Dev.",
+    "operands": [
+      24,
+      69
+    ],
+    "intent": "add",
+    "result": 93
+  },
+  {
+    "prompt": "Layla had 4 marbles, then found another 38.",
+    "operands": [
+      4,
+      38
+    ],
+    "intent": "add",
+    "result": 42
+  },
+  {
+    "prompt": "Thomas had 87 marbles, but sacrifice 37 on something.",
+    "operands": [
+      87,
+      37
+    ],
+    "intent": "subtract",
+    "result": 50
+  },
+  {
+    "prompt": "Zaid had 36 books, but gave 83 to Sana.",
+    "operands": [
+      36,
+      83
+    ],
+    "intent": "subtract",
+    "result": -47
+  },
+  {
+    "prompt": "Sana had 49 cake, then transferred 76 to Imran's account.",
+    "operands": [
+      49,
+      76
+    ],
+    "intent": "subtract",
+    "result": -27
+  },
+  {
+    "prompt": "Faisal had 49 marbles, and later spend 98 as a donation.",
+    "operands": [
+      49,
+      98
+    ],
+    "intent": "subtract",
+    "result": -49
+  },
+  {
+    "prompt": "Maria had ₹29 rupees, and his sister Matthew helped him obtain ₹33 more.",
+    "operands": [
+      29,
+      33
+    ],
+    "intent": "add",
+    "result": 62
+  },
+  {
+    "prompt": "Krishna had $33 dollars, but gave $82 to Neha.",
+    "operands": [
+      33,
+      82
+    ],
+    "intent": "subtract",
+    "result": -49
+  },
+  {
+    "prompt": "Krishna had $49 dollars, and later pay $38 as a donation.",
+    "operands": [
+      49,
+      38
+    ],
+    "intent": "subtract",
+    "result": 11
+  },
+  {
+    "prompt": "Sophia had 27 candies, then Rebecca gave him 43, Joseph gave him 43, Samuel gave him 4, George gave him 5 and Rachel gave him 13.",
+    "operands": [
+      27,
+      43,
+      43,
+      4,
+      5,
+      13
+    ],
+    "intent": "add",
+    "result": 135
+  },
+  {
+    "prompt": "Maria had 97 candies, then contribute 98 to charity.",
+    "operands": [
+      97,
+      98
+    ],
+    "intent": "subtract",
+    "result": -1
+  },
+  {
+    "prompt": "Krishna had 69 cake, then Arjun gave him 78 more.",
+    "operands": [
+      69,
+      78
+    ],
+    "intent": "add",
+    "result": 147
+  },
+  {
+    "prompt": "Matthew had $40 dollars, then lend $58 to charity.",
+    "operands": [
+      40,
+      58
+    ],
+    "intent": "subtract",
+    "result": -18
+  },
+  {
+    "prompt": "Ahmed had 7 marbles, but gave 77 to Hafsa.",
+    "operands": [
+      7,
+      77
+    ],
+    "intent": "subtract",
+    "result": -70
+  },
+  {
+    "prompt": "Meera had 28 marbles, and later contribute 24 as a donation.",
+    "operands": [
+      28,
+      24
+    ],
+    "intent": "subtract",
+    "result": 4
+  },
+  {
+    "prompt": "Ayesha had 47 cake, then collected additional 42, 48, 6, 28 from others.",
+    "operands": [
+      47,
+      42,
+      48,
+      6,
+      28
+    ],
+    "intent": "add",
+    "result": 171
+  },
+  {
+    "prompt": "Noor had 62 cake, but donate 27 on something.",
+    "operands": [
+      62,
+      27
+    ],
+    "intent": "subtract",
+    "result": 35
+  },
+  {
+    "prompt": "Elizabeth had 4 books, but gave 70 to Joseph.",
+    "operands": [
+      4,
+      70
+    ],
+    "intent": "subtract",
+    "result": -66
+  },
+  {
+    "prompt": "Anna had $91 dollars, but squander $63 on something.",
+    "operands": [
+      91,
+      63
+    ],
+    "intent": "subtract",
+    "result": 28
+  },
+  {
+    "prompt": "Rohan had $5 dollars, then found another $8.",
+    "operands": [
+      5,
+      8
+    ],
+    "intent": "add",
+    "result": 13
+  },
+  {
+    "prompt": "Noor had 66 cake, then Kareem gave him 53 more.",
+    "operands": [
+      66,
+      53
+    ],
+    "intent": "add",
+    "result": 119
+  },
+  {
+    "prompt": "Anthony had 40 marbles, then found another 95.",
+    "operands": [
+      40,
+      95
+    ],
+    "intent": "add",
+    "result": 135
+  },
+  {
+    "prompt": "Radha had 40 candies, then throw away 65 to charity.",
+    "operands": [
+      40,
+      65
+    ],
+    "intent": "subtract",
+    "result": -25
+  },
+  {
+    "prompt": "Vivek had 29 marbles, then transfer 87 to charity.",
+    "operands": [
+      29,
+      87
+    ],
+    "intent": "subtract",
+    "result": -58
+  },
+  {
+    "prompt": "Matthew had $20 dollars, but gave $20 to Teresa.",
+    "operands": [
+      20,
+      20
+    ],
+    "intent": "subtract",
+    "result": 0
+  },
+  {
+    "prompt": "Amira found $36 dollars.",
+    "operands": [
+      36
+    ],
+    "intent": "add",
+    "result": 36
+  },
+  {
+    "prompt": "Sophia had 10 marbles, then found another 54.",
+    "operands": [
+      10,
+      54
+    ],
+    "intent": "add",
+    "result": 64
+  },
+  {
+    "prompt": "Rahul had $62 dollars, then transferred $15 to Meera's account.",
+    "operands": [
+      62,
+      15
+    ],
+    "intent": "subtract",
+    "result": 47
+  },
+  {
+    "prompt": "Vivek had 2 books, and his friend Priya helped him secure 34 more.",
+    "operands": [
+      2,
+      34
+    ],
+    "intent": "add",
+    "result": 36
+  },
+  {
+    "prompt": "Imran had 59 cake, then received 23 as a gift.",
+    "operands": [
+      59,
+      23
+    ],
+    "intent": "add",
+    "result": 82
+  },
+  {
+    "prompt": "George had ₹13 rupees, then collected additional ₹18, ₹4, ₹26, ₹19, ₹25 from others.",
+    "operands": [
+      13,
+      18,
+      4,
+      26,
+      19,
+      25
+    ],
+    "intent": "add",
+    "result": 105
+  },
+  {
+    "prompt": "Grace had 3 books, but gave 58 to Anna.",
+    "operands": [
+      3,
+      58
+    ],
+    "intent": "subtract",
+    "result": -55
+  },
+  {
+    "prompt": "Zaid had 12 marbles, but gave 24 to Faisal.",
+    "operands": [
+      12,
+      24
+    ],
+    "intent": "subtract",
+    "result": -12
+  },
+  {
+    "prompt": "Maria had 32 books, and his sister Samuel helped him secure 44 more.",
+    "operands": [
+      32,
+      44
+    ],
+    "intent": "add",
+    "result": 76
+  },
+  {
+    "prompt": "Aryan had 8 marbles, then found another 80.",
+    "operands": [
+      8,
+      80
+    ],
+    "intent": "add",
+    "result": 88
+  },
+  {
+    "prompt": "Vivek had 78 books, then transferred 59 to Riya's account.",
+    "operands": [
+      78,
+      59
+    ],
+    "intent": "subtract",
+    "result": 19
+  },
+  {
+    "prompt": "Elizabeth had 44 cake, and later gain 6, 10, 1, 22, 46 from Teresa, Samuel, Paul, Rachel, Sarah respectively.",
+    "operands": [
+      44,
+      6,
+      10,
+      1,
+      22,
+      46
+    ],
+    "intent": "add",
+    "result": 129
+  },
+  {
+    "prompt": "Vikram had $11 dollars, then sacrifice $93 to charity.",
+    "operands": [
+      11,
+      93
+    ],
+    "intent": "subtract",
+    "result": -82
+  },
+  {
+    "prompt": "Kareem owns 16 books.",
+    "operands": [
+      16
+    ],
+    "intent": "add",
+    "result": 16
+  },
+  {
+    "prompt": "George had 63 cake, and later find 95 from Grace.",
+    "operands": [
+      63,
+      95
+    ],
+    "intent": "add",
+    "result": 158
+  },
+  {
+    "prompt": "Meera had 43 books, and later acquire 58 from Aryan.",
+    "operands": [
+      43,
+      58
+    ],
+    "intent": "add",
+    "result": 101
+  },
+  {
+    "prompt": "Anna had ₹3 rupees, then transfer ₹2 to charity.",
+    "operands": [
+      3,
+      2
+    ],
+    "intent": "subtract",
+    "result": 1
+  },
+  {
+    "prompt": "Khadija had $39 dollars, then received $21 as a gift.",
+    "operands": [
+      39,
+      21
+    ],
+    "intent": "add",
+    "result": 60
+  },
+  {
+    "prompt": "Hafsa had 95 marbles, and his daughter Layla helped him find 38 more.",
+    "operands": [
+      95,
+      38
+    ],
+    "intent": "add",
+    "result": 133
+  },
+  {
+    "prompt": "Siddharth had 61 candies, and later secure 60 from Lakshmi.",
+    "operands": [
+      61,
+      60
+    ],
+    "intent": "add",
+    "result": 121
+  },
+  {
+    "prompt": "Omar had 67 cake, but gave 20 to Mustafa.",
+    "operands": [
+      67,
+      20
+    ],
+    "intent": "subtract",
+    "result": 47
+  },
+  {
+    "prompt": "Sophia had 26 marbles, and later acquire 99 from Teresa.",
+    "operands": [
+      26,
+      99
+    ],
+    "intent": "add",
+    "result": 125
+  }
+]

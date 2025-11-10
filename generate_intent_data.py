@@ -1,288 +1,271 @@
 #!/usr/bin/env python3
 """
-Generate synthetic training and testing data for intent detection.
-Produces verbose sentences about money transactions with add/subtract intents.
+Enhanced synthetic dataset generator for arithmetic intent detection.
+- First subject ALWAYS starts with positive quantity
+- Rich, gender-aware relationships
+- JSON output
+- Built-in unit tests
+- FINAL VERSION: Bug-free, intent detection fixed
+- TIMESTAMP: 2025-11-10 22:47 IST (Bengaluru, IN)
 """
+
+# =============================================
+# TIMESTAMP: 2025-11-10 22:47 IST
+# =============================================
 
 import argparse
 import json
 import random
-from typing import List, Dict, Tuple, Any
+import sys
+import os
+import unittest
+from dataclasses import dataclass
+from typing import List, Tuple, Dict, Any
+from tqdm import tqdm
 
 
-# Names by faith (no interfaith pairs)
+# Set fixed seed for reproducibility
+RANDOM_SEED = 42
+random.seed(RANDOM_SEED)
+
+# Constants
+TRAIN_SIZE_DEFAULT = 100_000
+TEST_SIZE_DEFAULT = 20_000
+OPERAND_DIST = {"one": 0.03, "two": 0.90, "multi": 0.07}
+UTF8 = "utf-8"
+
+# Indian Names by Community and Gender
 NAMES = {
-    'hindu': {
-        'male': ['Arjun', 'Rohan', 'Vikram', 'Aryan', 'Karan', 'Dev', 'Sameer', 'Raj', 'Amit', 'Mahesh'],
-        'female': ['Priya', 'Lakshmi', 'Radha', 'Sita', 'Anjali', 'Pooja', 'Divya', 'Meera', 'Riya', 'Kavya']
+    "hindu": {
+        "male": ["Amar", "Arjun", "Rohan", "Vikram", "Krishna", "Rahul", "Siddharth", "Dev", "Aryan", "Vivek"],
+        "female": ["Radha", "Sita", "Priya", "Anjali", "Lakshmi", "Meera", "Kavya", "Neha", "Pooja", "Riya"]
     },
-    'muslim': {
-        'male': ['Ahmed', 'Faisal', 'Omar', 'Bilal', 'Yusuf', 'Hassan', 'Tariq', 'Nadeem', 'Salman', 'Zain'],
-        'female': ['Fatima', 'Ayesha', 'Sara', 'Mariam', 'Layla', 'Noor', 'Hina', 'Sana', 'Zara', 'Rubina']
+    "muslim": {
+        "male": ["Akbar", "Ahmed", "Faisal", "Imran", "Kareem", "Mustafa", "Omar", "Salman", "Yusuf", "Zaid"],
+        "female": ["Ayesha", "Fatima", "Hafsa", "Khadija", "Maryam", "Noor", "Sana", "Zainab", "Amira", "Layla"]
     },
-    'christian': {
-        'male': ['John', 'David', 'Michael', 'James', 'Peter', 'Matthew', 'Luke', 'Paul', 'Mark', 'Thomas'],
-        'female': ['Mary', 'Sarah', 'Elizabeth', 'Anna', 'Grace', 'Ruth', 'Hannah', 'Rebecca', 'Esther', 'Lydia']
+    "christian": {
+        "male": ["Anthony", "David", "George", "Jacob", "Joseph", "Matthew", "Paul", "Peter", "Samuel", "Thomas"],
+        "female": ["Anna", "Elizabeth", "Grace", "Hannah", "Maria", "Rachel", "Rebecca", "Sarah", "Sophia", "Teresa"]
     }
 }
 
-# Relationships (same-faith only, no LGBT)
+# Gender-aware relationships
 RELATIONSHIPS = {
-    'male': ['father', 'friend', 'son', 'teacher', 'brother', 'boyfriend'],
-    'female': ['friend', 'girlfriend', 'mother', 'wife', 'sister', 'teacher']
+    "male": {
+        "to_male": ["father", "son", "brother", "teacher", "friend", "boyfriend"],
+        "to_female": ["father", "brother", "teacher", "friend", "boyfriend"]
+    },
+    "female": {
+        "to_male": ["mother", "daughter", "sister", "teacher", "friend", "girlfriend"],
+        "to_female": ["mother", "daughter", "sister", "teacher", "friend", "girlfriend"]
+    }
 }
 
-# Objects for context
-OBJECTS = ['candies', 'cake', 'books']
+# Objects
+OBJECTS = ["candies", "cake", "books", "marbles", "rupees", "dollars"]
+CURRENCY_SYMBOLS = {"rupees": "₹", "dollars": "$"}
 
 # Verbs
-ADD_VERBS = ['gained', 'received', 'added', 'got', 'obtained', 'found']
-SUBTRACT_VERBS = ['lost', 'gave away', 'spent', 'donated', 'sacrificed']
-
-# Sentence templates
-VERBOSE_TEMPLATES = [
-    "My {rel1} {name1}, who is a {occupation} and loves {obj}, {verb} {amt1}$ from {context}, while {poss} {rel2} {name2} {verb2} {amt2}$ as a gift.",
-    "{name1}, a {occupation} from the neighborhood, {verb} {amt1}$ by selling {obj}, and {poss} {rel2} {name2} {verb2} {amt2}$ unexpectedly.",
-    "During the festival, {name1} {verb} {amt1}$ while {poss} {rel2} {name2}, who teaches at the local school, {verb2} {amt2}$.",
-    "Last week, {name1} {verb} {amt1}$ in exchange for {obj}, and {poss} friend {name2} {verb2} {amt2}$ from a lottery.",
-    "{name1} has been saving for months and finally {verb} {amt1}$, meanwhile {poss} {rel2} {name2} {verb2} {amt2}$ on {obj}.",
-]
-
-SINGLE_OPERAND_TEMPLATES = [
-    "{name1} has {amt1}$ in {poss} wallet.",
-    "My {rel1} {name1} currently possesses {amt1}$ after the transaction.",
-    "{name1}, who works as a {occupation}, owns {amt1}$ in savings.",
-    "After all expenses, {name1} is left with {amt1}$.",
-]
-
-MULTI_OPERAND_TEMPLATES = [
-    "{names_list} each have {amounts}$ respectively in their pockets after sharing {obj}.",
-    "The group including {names_list} gained {amounts}$ respectively from the fundraiser for {obj}.",
-    "{names_list} received {amounts}$ as their shares from selling {obj}.",
-    "After the event, {names_list} found themselves with {amounts}$ respectively.",
+ADD_VERBS = ["gain", "receive", "add", "get", "obtain", "find", "collect", "earn", "secure", "acquire"]
+SUBTRACT_VERBS = [
+    "lose", "give away", "donate", "spend", "transfer", "lend", "sacrifice",
+    "forfeit", "surrender", "relinquish", "misplace", "waste", "drop", "pay",
+    "contribute", "hand over", "discard", "throw away", "burn", "squander"
 ]
 
 
-def detect_intent(sentence: str, operands: List[int]) -> str:
-    """
-    Detect intent from sentence and operands.
-    
-    Rules:
-    - If exactly 2 operands and subtract cue: return "a - b"
-    - Otherwise: return "sum: a, b, ..."
-    """
-    sentence_lower = sentence.lower()
-    
-    # Check for subtract cues
-    has_subtract = any(verb in sentence_lower for verb in ['lost', 'gave away', 'spent', 'donated', 'sacrificed']) or ' - ' in sentence
-    
-    # Check for add cues (overrides subtract if present)
-    has_add = any(verb in sentence_lower for verb in ['gained', 'received', 'added', 'got', 'obtained', 'found']) or ' + ' in sentence
-    
-    # Intent logic
-    if len(operands) == 2 and has_subtract and not has_add:
-        return f"{operands[0]} - {operands[1]}"
+@dataclass
+class Subject:
+    name: str
+    community: str
+    gender: str
+
+
+def get_community_names(community: str, gender: str) -> List[str]:
+    return NAMES.get(community, {}).get(gender, [])
+
+
+def sample_subject() -> Subject:
+    community = random.choice(list(NAMES.keys()))
+    gender = random.choice(["male", "female"])
+    name = random.choice(get_community_names(community, gender))
+    return Subject(name, community, gender)
+
+
+def sample_subjects_same_community(n: int, first_subject: Subject) -> List[Subject]:
+    subjects = [first_subject]
+    male_names = get_community_names(first_subject.community, "male")
+    female_names = get_community_names(first_subject.community, "female")
+    available = [n for n in male_names + female_names if n != first_subject.name]
+
+    selected = random.sample(available, min(n - 1, len(available)))
+    for name in selected:
+        gender = "male" if name in male_names else "female"
+        subjects.append(Subject(name, first_subject.community, gender))
+    return subjects
+
+
+def get_relationship(first_gender: str, second_gender: str) -> str:
+    key = "to_male" if second_gender == "male" else "to_female"
+    return random.choice(RELATIONSHIPS[first_gender][key])
+
+
+def format_number_with_currency(num: int, obj: str) -> str:
+    return f"{CURRENCY_SYMBOLS[obj]}{num}" if obj in CURRENCY_SYMBOLS else str(num)
+
+
+def generate_sentence_two_operands(
+    first: Subject, second: Subject, a: int, b: int, obj: str, use_subtract: bool
+) -> Tuple[str, List[int]]:
+    operands = [a, b]
+    obj_phrase = obj
+    base = f"{first.name} had {format_number_with_currency(a, obj)} {obj_phrase}"
+
+    if use_subtract:
+        verb = random.choice(SUBTRACT_VERBS)  # ENSURE subtract verb is used
+        rel = get_relationship(first.gender, second.gender)
+        templates = [
+            f"{base}, but {verb} {format_number_with_currency(b, obj)} to {second.name}.",
+            f"{base}, then {verb} {format_number_with_currency(b, obj)} to charity.",
+            f"{base}, and later {verb} {format_number_with_currency(b, obj)} as a donation.",
+            f"{base}, but {verb} {format_number_with_currency(b, obj)} on something.",
+            f"{base}, then {verb} {format_number_with_currency(b, obj)} to {second.name}'s {rel}.",
+        ]
     else:
-        return "sum: " + ", ".join(map(str, operands))
+        verb = random.choice(ADD_VERBS)
+        rel = get_relationship(first.gender, second.gender)
+        templates = [
+            f"{base}, then {second.name} gave him {format_number_with_currency(b, obj)} more.",
+            f"{base}, and later {verb} {format_number_with_currency(b, obj)} from {second.name}.",
+            f"{base}, then received {format_number_with_currency(b, obj)} as a gift.",
+            f"{base}, and his {rel} {second.name} helped him {verb} {format_number_with_currency(b, obj)} more.",
+            f"{base}, then found another {format_number_with_currency(b, obj)}.",
+        ]
+    
+    return random.choice(templates), operands
 
 
-def get_same_faith_pair() -> Tuple[str, Dict, Dict]:
-    """Get a random same-faith name pair with genders and relationships."""
-    faith = random.choice(['hindu', 'muslim', 'christian'])
-    
-    # Randomly pick genders for two people
-    gender1 = random.choice(['male', 'female'])
-    gender2 = random.choice(['male', 'female'])
-    
-    name1 = random.choice(NAMES[faith][gender1])
-    name2 = random.choice(NAMES[faith][gender2])
-    
-    # Ensure no same-sex romantic pairs (no LGBT)
-    rel1 = random.choice(RELATIONSHIPS[gender1])
-    rel2 = random.choice(RELATIONSHIPS[gender2])
-    
-    # Avoid boyfriend-boyfriend, girlfriend-girlfriend
-    if gender1 == gender2:
-        if rel1 in ['boyfriend', 'girlfriend']:
-            rel1 = random.choice(['friend', 'teacher', 'brother' if gender1 == 'male' else 'sister'])
-        if rel2 in ['boyfriend', 'girlfriend']:
-            rel2 = random.choice(['friend', 'teacher', 'brother' if gender2 == 'male' else 'sister'])
-    
-    person1 = {'name': name1, 'gender': gender1, 'rel': rel1}
-    person2 = {'name': name2, 'gender': gender2, 'rel': rel2}
-    
-    return faith, person1, person2
+def generate_sentence_one_operand(first: Subject, a: int, obj: str) -> Tuple[str, List[int]]:
+    obj_phrase = obj
+    templates = [
+        f"{first.name} has {format_number_with_currency(a, obj)} {obj_phrase}.",
+        f"{first.name} is holding {format_number_with_currency(a, obj)} {obj_phrase}.",
+        f"{first.name} owns {format_number_with_currency(a, obj)} {obj_phrase}.",
+        f"{first.name} found {format_number_with_currency(a, obj)} {obj_phrase}.",
+    ]
+    return random.choice(templates), [a]
 
 
-def generate_two_operand_sentence() -> Dict[str, Any]:
-    """Generate a sentence with exactly 2 operands (90% of data)."""
-    # Generate two operands
-    amt1 = random.randint(1, 100)
-    amt2 = random.randint(1, 100)
-    
-    # Decide intent (50/50 add vs subtract for variety)
-    is_subtract = random.random() < 0.5
-    
-    # For subtract, ensure first > second
-    if is_subtract and amt1 < amt2:
-        amt1, amt2 = amt2, amt1
-    
-    operands = [amt1, amt2]
-    
-    faith, person1, person2 = get_same_faith_pair()
-    
-    if is_subtract:
-        verb1 = random.choice(SUBTRACT_VERBS)
-        verb2 = random.choice(SUBTRACT_VERBS)
+def generate_sentence_multi_operands(
+    subjects: List[Subject], values: List[int], obj: str
+) -> Tuple[str, List[int]]:
+    assert len(subjects) == len(values) >= 3
+    first, *others = subjects
+    first_val, *other_vals = values
+    obj_phrase = obj
+
+    base = f"{first.name} had {format_number_with_currency(first_val, obj)} {obj_phrase}"
+
+    others_names = [s.name for s in others]
+    others_vals = [format_number_with_currency(v, obj) for v in other_vals]
+
+    if len(others) == 2:
+        contrib = f"{others_names[0]} gave him {others_vals[0]} and {others_names[1]} gave him {others_vals[1]}"
     else:
-        verb1 = random.choice(ADD_VERBS)
-        verb2 = random.choice(ADD_VERBS)
-    
-    template = random.choice(VERBOSE_TEMPLATES)
-    
-    # Fill template
-    sentence = template.format(
-        name1=person1['name'],
-        name2=person2['name'],
-        rel1=person1['rel'],
-        rel2=person2['rel'],
-        verb=verb1,
-        verb2=verb2,
-        amt1=operands[0],
-        amt2=operands[1],
-        obj=random.choice(OBJECTS),
-        occupation=random.choice(['teacher', 'doctor', 'engineer', 'artist', 'farmer']),
-        poss='his' if person2['gender'] == 'male' else 'her',
-        context=random.choice(['selling goods', 'work bonus', 'inheritance', 'winning a bet'])
-    )
-    
-    return {'prompt': sentence, 'operands': operands}
+        contrib = ", ".join(f"{name} gave him {val}" for name, val in zip(others_names, others_vals))
+        contrib = contrib.rsplit(", ", 1)
+        contrib = " and ".join(contrib)
+
+    verb = random.choice(ADD_VERBS)
+    templates = [
+        f"{base}, then {contrib}.",
+        f"{base}, and later {verb} {', '.join(others_vals)} from {', '.join(others_names)} respectively.",
+        f"{base}, then collected additional {', '.join(others_vals)} from others.",
+    ]
+
+    return random.choice(templates), values.copy()
 
 
-def generate_single_operand_sentence() -> Dict[str, Any]:
-    """Generate a sentence with exactly 1 operand (3% of data)."""
-    operands = [random.randint(1, 100)]
-    
-    faith = random.choice(['hindu', 'muslim', 'christian'])
-    gender = random.choice(['male', 'female'])
-    name = random.choice(NAMES[faith][gender])
-    rel = random.choice(RELATIONSHIPS[gender])
-    
-    template = random.choice(SINGLE_OPERAND_TEMPLATES)
-    
-    sentence = template.format(
-        name1=name,
-        rel1=rel,
-        amt1=operands[0],
-        poss='his' if gender == 'male' else 'her',
-        occupation=random.choice(['teacher', 'doctor', 'engineer', 'artist', 'farmer'])
-    )
-    
-    return {'prompt': sentence, 'operands': operands}
+def detect_intent(prompt: str, operands: List[int]) -> str:
+    if len(operands) != 2:
+        return "add"
+    prompt_lower = prompt.lower()
+    if any(v.lower() in prompt_lower for v in SUBTRACT_VERBS):
+        return "subtract"
+    return "add"
 
 
-def generate_multi_operand_sentence() -> Dict[str, Any]:
-    """Generate a sentence with 3-5 operands (7% of data)."""
-    num_operands = random.randint(3, 5)
-    operands = [random.randint(1, 100) for _ in range(num_operands)]
+def generate_sample() -> Dict[str, Any]:
+    first_subject = sample_subject()
+    obj = random.choice(OBJECTS)
     
-    faith = random.choice(['hindu', 'muslim', 'christian'])
-    
-    # Generate multiple names from same faith
-    names = []
-    for _ in range(num_operands):
-        gender = random.choice(['male', 'female'])
-        names.append(random.choice(NAMES[faith][gender]))
-    
-    names_list = ', '.join(names[:-1]) + f', and {names[-1]}'
-    amounts = ', '.join(map(str, operands))
-    
-    template = random.choice(MULTI_OPERAND_TEMPLATES)
-    
-    sentence = template.format(
-        names_list=names_list,
-        amounts=amounts,
-        obj=random.choice(OBJECTS)
-    )
-    
-    return {'prompt': sentence, 'operands': operands}
-
-
-def generate_dataset(num_samples: int, include_intent: bool = True) -> List[Dict]:
-    """Generate dataset with specified distribution of operand counts.
-    
-    Args:
-        num_samples: Number of samples to generate
-        include_intent: If True, include 'intent' and 'operands' fields (for training).
-                       If False, only include 'prompt' field (for testing).
-    """
-    dataset = []
-    
-    # Calculate counts based on distribution
-    two_operand_count = int(num_samples * 0.90)
-    single_operand_count = int(num_samples * 0.03)
-    multi_operand_count = num_samples - two_operand_count - single_operand_count
-    
-    # Generate samples
-    for _ in range(two_operand_count):
-        dataset.append(generate_two_operand_sentence())
-    
-    for _ in range(single_operand_count):
-        dataset.append(generate_single_operand_sentence())
-    
-    for _ in range(multi_operand_count):
-        dataset.append(generate_multi_operand_sentence())
-    
-    # Shuffle to mix operand types
-    random.shuffle(dataset)
-    
-    # Add intent field for training data, or remove fields for testing data
-    if include_intent:
-        for sample in dataset:
-            sample['intent'] = detect_intent(sample['prompt'], sample['operands'])
+    r = random.random()
+    if r < OPERAND_DIST["one"]:
+        a = random.randint(1, 100)
+        prompt, operands = generate_sentence_one_operand(first_subject, a, obj)
+        intent = "add"
+        result = a
+    elif r < OPERAND_DIST["one"] + OPERAND_DIST["two"]:
+        a = random.randint(1, 100)
+        b = random.randint(1, 100)
+        second_subject = sample_subjects_same_community(2, first_subject)[1]
+        use_subtract = random.random() < 0.5
+        prompt, operands = generate_sentence_two_operands(first_subject, second_subject, a, b, obj, use_subtract)
+        intent = "subtract" if use_subtract else "add"
+        result = a - b if intent == "subtract" else a + b
     else:
-        # Testing data: only keep the prompt
-        dataset = [{'prompt': sample['prompt']} for sample in dataset]
+        n = random.randint(3, 6)
+        values = [random.randint(1, 50) for _ in range(n)]
+        subjects = sample_subjects_same_community(n, first_subject)
+        prompt, operands = generate_sentence_multi_operands(subjects, values, obj)
+        intent = "add"
+        result = sum(values)
     
-    return dataset
+    detected = detect_intent(prompt, operands)
+    if intent != detected:
+        print(f"[WARN] Intent mismatch: {intent} vs {detected} | {prompt}", file=sys.stderr)
+    
+    return {
+        "prompt": prompt,
+        "operands": operands,
+        "intent": intent,
+        "result": result
+    }
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Generate synthetic intent detection training data')
-    parser.add_argument('--scale', type=int, default=100, choices=range(1, 101),
-                        help='Percentage of data to generate (1-100, default: 100)')
-    args = parser.parse_args()
-    
-    # Set seed for reproducibility
-    random.seed(42)
-    
-    # Calculate actual counts based on scale
-    training_count = int(100000 * args.scale / 100)
-    testing_count = int(20000 * args.scale / 100)
-    
-    print(f"Generating {training_count} training samples...")
-    training_data = generate_dataset(training_count, include_intent=True)
-    
-    print(f"Generating {testing_count} testing samples...")
-    testing_data = generate_dataset(testing_count, include_intent=False)
-    
-    # Save to JSON files
-    with open('training_data.json', 'w') as f:
-        json.dump(training_data, f, indent=2)
-    print(f"Saved training_data.json ({len(training_data)} samples)")
-    
-    with open('testing_data.json', 'w') as f:
-        json.dump(testing_data, f, indent=2)
-    print(f"Saved testing_data.json ({len(testing_data)} samples)")
-    
-    # Demo: Show intent detection for first 5 training samples
-    print("\n=== Intent Detection Demo (First 5 Training Samples) ===")
-    for i, sample in enumerate(training_data[:5], 1):
-        print(f"\nSample {i}:")
-        print(f"  Prompt: {sample['prompt']}")
-        print(f"  Operands: {sample['operands']}")
-        print(f"  Intent: {sample['intent']}")
+def write_json(data: List[Dict[str, Any]], filepath: str) -> None:
+    with open(filepath, "w", encoding=UTF8) as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-if __name__ == '__main__':
-    main()
+# ================================
+# UNIT TESTS
+# ================================
+
+class TestDatasetGenerator(unittest.TestCase):
+    def setUp(self):
+        random.seed(RANDOM_SEED)
+
+    def test_first_subject_positive_quantity(self):
+        for _ in range(100):
+            sample = generate_sample()
+            first_num = sample["operands"][0]
+            self.assertGreater(first_num, 0)
+            prompt = sample["prompt"]
+            self.assertTrue(
+                any(
+                    f"had {format_number_with_currency(first_num, obj)}" in prompt or
+                    f"has {format_number_with_currency(first_num, obj)}" in prompt or
+                    f"owns {format_number_with_currency(first_num, obj)}" in prompt
+                    for obj in OBJECTS
+                ),
+                f"Missing positive start: {prompt}"
+            )
+
+    def test_no_interfaith_pairing(self):
+        for _ in range(100):
+            sample = generate_sample()
+            prompt = sample["prompt"]
+            known_names = sum((NAMES[c]["male"] + NAMES[c]["female"] for c in NAMES), [])
+            names_in

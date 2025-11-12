@@ -1,33 +1,91 @@
-Please make a prompt - want make a python script to make training and testing data. Script should have lot of useless data, script should capture final intent. if there are 2 operands an intent is subtract make it a - b, in all other case intent is addition (sum: a..z)
-there are male and female actors with the name hindu, muslim, Christian. Please pick real commonly used names 10 each from each faith. male - can be father, friend, son, teacher brother, boyfriend. Female can be friend, girlfriend mother wife sister teacher. Avoid interfaith pairs
-objects can be candies, cake, books.
+# Prompt
+Your an expert prompt writer, to write a detailed and crips prompt to be fed as input to a prompt generator.
+Ultimate goal of the generated prompt to make a python script to produce training and testing data with sufficient noise.
 
-Verbs can be gain, receive, add, get, obtain, find, == add. Invent your own words for subtract and write a prompt to make python file to make 100K training data and 20K test data. also a module which can detect the intent, Inent can also be +, - add subtract beside common verbs
+## Entities 
 
-Always first Subject any one (Amar, Akbar or Anthony) start with a positive quantity 
-Example 
+### Actors
+15 well known / common male names.
+15 well known / common female names.
+Equally distributed from hinud, muslim and christain faith.
 
-Amar had 3 marbles, then abkar and anthony gives 3 and 4 marbles to Amat (Sum Case)
-Final output is relative to first subject - Amar in this case
+Actors are school children / teacher and friends.
 
-Subtract Case
-John had 15$ and he gave tim 3$
-Final result relatibe to john
+### Relationship
+1:1 
+Actor 2 is [friend, teacher, student, senior, junior] of the Actor 1
 
-Add Case
-Radha had 34 rupees, dad saurabh gave her 16 rupees
-Final result relative to Radha
+### Verbs / Actions 
 
-script should finally create each row with following structure
-prompt - string
-operands = int array [34, 39]
-if there are exactly 2 oprands and intent subtract then it is subtract
-if total oparands are not 2, then it is add by default
-90% of statements should become 2 operands
-3% should become 1 operands - like mahesh have 3$
-7% should become 3+ operands like amar, akbar anthony have 3$ each in the pocket
+#### Addition
+get, add, receive
+### subtraction
+give, pay, gift
 
-Scaling: 
-To facilitate manual inspection we need to create less data. So please add a command line flag --scale {1..100} meaning system must pick onlt scale% of random records in training and testing json records. scale default is 100%
+## Assets and units 
+Assets are expressed in same unit, [$, Rupee (Add the symbol), marbles, candies, books, pencils]
+treat .*[UNIT].* 100 same as 100 .*[UNIT].* (I am using regular expression convention)
+example $10 === 10 $ == 10$ === $ 10
+apply this rule all assets lited above.
+### Number of operands and target operation
+1 oparand - always add
+prompt: Mahesh have 3 cars.
+operation: {
+    kind: add
+    operands:[3,]
+}
+
+2 operands - add / subtract based on rule given above
+prompt:
+John had 45$ and he got $10 from Mahesh
+operation: {
+    kind: add
+    operands:[45,10]
+}
+
+John had 45$ and he gave $10 from Mahesh
+operation: {
+    kind: subtract
+    operands:[45,10]
+}
+
+3 - always insert add: [get, add, receive] and result is sum of 
+3 operands - sum on rule given above
+
+There are 10 champa, 6 rose, 6 jasmine, 10 marigold flowers
+operation: {
+    kind: add (sum)
+    operands:[10,6,6,10]
+}
+
+## Direction of transaction
+Anchored to Actor 1. 
+Result is always anchored to first actor.
+### Addition
+Sam had $100 and he [gets, adds, recieves] $12 from Mahesh
+### Subtraction
+Sam had $100 and he [gives, gifts, pays] $12 from Mahesh
 
 
+### Script Goal
+Output format for training and testing data 
+ {
+  "prompt": "John had 45$ and he got $10 from Mahesh",
+  "operation": {
+    "kind": add
+    "operands":[45,10]
+    }
+ }
+
+ Also ass option to the script --scale [1..100], default to 100
+ Script should produce 100 (traning data) and 20 testing data.
+ 
+ Total training rows 100,000
+ Add scale factor and output only scale% rows randomly picked form generated rows.
+
+ Also add a unit test in the script on 0.5% of the data.
+
+ save training and testing data in json file __train.json __test.json 
+
+### Ultimate Goal
+Generate a crisp, clear and exact prompt.

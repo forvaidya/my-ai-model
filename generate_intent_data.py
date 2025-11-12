@@ -1,271 +1,439 @@
 #!/usr/bin/env python3
 """
-Enhanced synthetic dataset generator for arithmetic intent detection.
-- First subject ALWAYS starts with positive quantity
-- Rich, gender-aware relationships
-- JSON output
-- Built-in unit tests
-- FINAL VERSION: Bug-free, intent detection fixed
-- TIMESTAMP: 2025-11-10 22:47 IST (Bengaluru, IN)
+Math Word Problem Dataset Generator
+
+Generates synthetic training and testing data for arithmetic word problems
+(addition and subtraction) with realistic linguistic variation and controlled noise.
+
+Usage:
+    python generate_math_data.py --scale 50 --seed 42
+    
+Output:
+    __train.json: Training data (100,000 examples by default, scaled by --scale)
+    __test.json: Testing data (20,000 examples by default, scaled by --scale)
 """
 
-# =============================================
-# TIMESTAMP: 2025-11-10 22:47 IST
-# =============================================
-
-import argparse
 import json
 import random
+import argparse
 import sys
-import os
-import unittest
-from dataclasses import dataclass
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Tuple, Any
+from collections import defaultdict
 from tqdm import tqdm
 
 
-# Set fixed seed for reproducibility
-RANDOM_SEED = 42
-random.seed(RANDOM_SEED)
+# ============================================================================
+# ACTOR NAMES (Balanced across faiths and genders)
+# ============================================================================
 
-# Constants
-TRAIN_SIZE_DEFAULT = 100_000
-TEST_SIZE_DEFAULT = 20_000
-OPERAND_DIST = {"one": 0.03, "two": 0.90, "multi": 0.07}
-UTF8 = "utf-8"
-
-# Indian Names by Community and Gender
-NAMES = {
-    "hindu": {
-        "male": ["Amar", "Arjun", "Rohan", "Vikram", "Krishna", "Rahul", "Siddharth", "Dev", "Aryan", "Vivek"],
-        "female": ["Radha", "Sita", "Priya", "Anjali", "Lakshmi", "Meera", "Kavya", "Neha", "Pooja", "Riya"]
-    },
-    "muslim": {
-        "male": ["Akbar", "Ahmed", "Faisal", "Imran", "Kareem", "Mustafa", "Omar", "Salman", "Yusuf", "Zaid"],
-        "female": ["Ayesha", "Fatima", "Hafsa", "Khadija", "Maryam", "Noor", "Sana", "Zainab", "Amira", "Layla"]
-    },
-    "christian": {
-        "male": ["Anthony", "David", "George", "Jacob", "Joseph", "Matthew", "Paul", "Peter", "Samuel", "Thomas"],
-        "female": ["Anna", "Elizabeth", "Grace", "Hannah", "Maria", "Rachel", "Rebecca", "Sarah", "Sophia", "Teresa"]
-    }
-}
-
-# Gender-aware relationships
-RELATIONSHIPS = {
+ACTORS = {
     "male": {
-        "to_male": ["father", "son", "brother", "teacher", "friend", "boyfriend"],
-        "to_female": ["father", "brother", "teacher", "friend", "boyfriend"]
+        "hindu": ["Mahesh", "Rajesh", "Arjun", "Vivek", "Rohan"],
+        "muslim": ["Ahmed", "Faisal", "Imran", "Zaid", "Yusuf"],
+        "christian": ["John", "David", "Peter", "Paul", "James"],
     },
     "female": {
-        "to_male": ["mother", "daughter", "sister", "teacher", "friend", "girlfriend"],
-        "to_female": ["mother", "daughter", "sister", "teacher", "friend", "girlfriend"]
-    }
+        "hindu": ["Priya", "Anjali", "Kavya", "Neha", "Shruti"],
+        "muslim": ["Aisha", "Fatima", "Sara", "Zainab", "Maryam"],
+        "christian": ["Mary", "Anna", "Elizabeth", "Sarah", "Grace"],
+    },
 }
 
-# Objects
-OBJECTS = ["candies", "cake", "books", "marbles", "rupees", "dollars"]
-CURRENCY_SYMBOLS = {"rupees": "₹", "dollars": "$"}
+FAITHS = ["hindu", "muslim", "christian"]
+GENDERS = ["male", "female"]
 
-# Verbs
-ADD_VERBS = ["gain", "receive", "add", "get", "obtain", "find", "collect", "earn", "secure", "acquire"]
-SUBTRACT_VERBS = [
-    "lose", "give away", "donate", "spend", "transfer", "lend", "sacrifice",
-    "forfeit", "surrender", "relinquish", "misplace", "waste", "drop", "pay",
-    "contribute", "hand over", "discard", "throw away", "burn", "squander"
-]
+# ============================================================================
+# RELATIONSHIPS
+# ============================================================================
 
+RELATIONSHIPS = ["friend", "teacher", "student", "senior", "junior"]
 
-@dataclass
-class Subject:
-    name: str
-    community: str
-    gender: str
+# ============================================================================
+# ASSETS & UNITS
+# ============================================================================
 
+ASSETS = ["$", "₹", "marbles", "candies", "books", "pencils"]
 
-def get_community_names(community: str, gender: str) -> List[str]:
-    return NAMES.get(community, {}).get(gender, [])
+# ============================================================================
+# VERBS
+# ============================================================================
 
+ADDITION_VERBS = ["get", "receive", "add"]
+SUBTRACTION_VERBS = ["give", "pay", "gift"]
 
-def sample_subject() -> Subject:
-    community = random.choice(list(NAMES.keys()))
-    gender = random.choice(["male", "female"])
-    name = random.choice(get_community_names(community, gender))
-    return Subject(name, community, gender)
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
 
 
-def sample_subjects_same_community(n: int, first_subject: Subject) -> List[Subject]:
-    subjects = [first_subject]
-    male_names = get_community_names(first_subject.community, "male")
-    female_names = get_community_names(first_subject.community, "female")
-    available = [n for n in male_names + female_names if n != first_subject.name]
-
-    selected = random.sample(available, min(n - 1, len(available)))
-    for name in selected:
-        gender = "male" if name in male_names else "female"
-        subjects.append(Subject(name, first_subject.community, gender))
-    return subjects
+def get_all_actors() -> List[str]:
+    """Return all actor names as a flat list."""
+    actors = []
+    for gender in GENDERS:
+        for faith in FAITHS:
+            actors.extend(ACTORS[gender][faith])
+    return actors
 
 
-def get_relationship(first_gender: str, second_gender: str) -> str:
-    key = "to_male" if second_gender == "male" else "to_female"
-    return random.choice(RELATIONSHIPS[first_gender][key])
+def get_actor_faith(actor: str) -> str:
+    """Return the faith of an actor."""
+    for gender in GENDERS:
+        for faith in FAITHS:
+            if actor in ACTORS[gender][faith]:
+                return faith
+    return None
 
 
-def format_number_with_currency(num: int, obj: str) -> str:
-    return f"{CURRENCY_SYMBOLS[obj]}{num}" if obj in CURRENCY_SYMBOLS else str(num)
+def get_actor_gender(actor: str) -> str:
+    """Return the gender of an actor."""
+    for gender in GENDERS:
+        for faith in FAITHS:
+            if actor in ACTORS[gender][faith]:
+                return gender
+    return None
 
 
-def generate_sentence_two_operands(
-    first: Subject, second: Subject, a: int, b: int, obj: str, use_subtract: bool
-) -> Tuple[str, List[int]]:
-    operands = [a, b]
-    obj_phrase = obj
-    base = f"{first.name} had {format_number_with_currency(a, obj)} {obj_phrase}"
+def get_pronoun(actor: str) -> str:
+    """Return appropriate pronoun for actor."""
+    gender = get_actor_gender(actor)
+    return "he" if gender == "male" else "she"
 
-    if use_subtract:
-        verb = random.choice(SUBTRACT_VERBS)  # ENSURE subtract verb is used
-        rel = get_relationship(first.gender, second.gender)
-        templates = [
-            f"{base}, but {verb} {format_number_with_currency(b, obj)} to {second.name}.",
-            f"{base}, then {verb} {format_number_with_currency(b, obj)} to charity.",
-            f"{base}, and later {verb} {format_number_with_currency(b, obj)} as a donation.",
-            f"{base}, but {verb} {format_number_with_currency(b, obj)} on something.",
-            f"{base}, then {verb} {format_number_with_currency(b, obj)} to {second.name}'s {rel}.",
+
+def get_possessive(actor: str) -> str:
+    """Return possessive form of actor name."""
+    return f"{actor}'s"
+
+
+def format_asset_value(value: int, asset: str) -> str:
+    """Format asset value with unit, with random variation."""
+    if asset in ["$", "₹"]:
+        # Variation: symbol before/after, with/without space
+        variations = [
+            f"{asset}{value}",
+            f"{value}{asset}",
+            f"{asset} {value}",
+            f"{value} {asset}",
+        ]
+        return random.choice(variations)
+    else:
+        # For non-currency assets
+        return f"{value} {asset}"
+
+
+def pluralize(word: str, count: int) -> str:
+    """Simple pluralization."""
+    if count == 1:
+        return word
+    if word.endswith("y"):
+        return word[:-1] + "ies"
+    return word + "s"
+
+
+def generate_operands(num_operands: int) -> List[int]:
+    """Generate random operand values (1-100)."""
+    return [random.randint(1, 100) for _ in range(num_operands)]
+
+
+def select_actors() -> Tuple[str, str]:
+    """Select two different actors."""
+    all_actors = get_all_actors()
+    actor1, actor2 = random.sample(all_actors, 2)
+    return actor1, actor2
+
+
+def generate_prompt_one_operand(actor1: str, asset: str, value: int) -> str:
+    """Generate prompt for single operand (always addition)."""
+    asset_str = pluralize(asset, value)
+    formatted_value = format_asset_value(value, asset)
+    
+    variations = [
+        f"{actor1} has {formatted_value} {asset_str}.",
+        f"{actor1} owns {formatted_value} {asset_str}.",
+        f"{actor1} has {formatted_value} {asset_str}.",
+    ]
+    return random.choice(variations)
+
+
+def generate_prompt_two_operands(
+    actor1: str, actor2: str, asset: str, value1: int, value2: int, is_addition: bool
+) -> str:
+    """Generate prompt for two operands (addition or subtraction)."""
+    pronoun = get_pronoun(actor1)
+    asset_str1 = pluralize(asset, value1)
+    asset_str2 = pluralize(asset, value2)
+    formatted_value1 = format_asset_value(value1, asset)
+    formatted_value2 = format_asset_value(value2, asset)
+    
+    if is_addition:
+        verb = random.choice(ADDITION_VERBS)
+        preposition = random.choice(["from", "off"])
+        variations = [
+            f"{actor1} had {formatted_value1} {asset_str1} and {pronoun} {verb} {formatted_value2} {asset_str2} {preposition} {actor2}.",
+            f"{actor1}, who had {formatted_value1} {asset_str1}, {verb} {formatted_value2} {asset_str2} {preposition} {actor2}.",
+            f"Having {formatted_value1} {asset_str1}, {actor1} {verb} {formatted_value2} {asset_str2} {preposition} {actor2}.",
+            f"{actor1} had {formatted_value1} {asset_str1}. {pronoun.capitalize()} {verb} {formatted_value2} {asset_str2} {preposition} {actor2}.",
         ]
     else:
-        verb = random.choice(ADD_VERBS)
-        rel = get_relationship(first.gender, second.gender)
-        templates = [
-            f"{base}, then {second.name} gave him {format_number_with_currency(b, obj)} more.",
-            f"{base}, and later {verb} {format_number_with_currency(b, obj)} from {second.name}.",
-            f"{base}, then received {format_number_with_currency(b, obj)} as a gift.",
-            f"{base}, and his {rel} {second.name} helped him {verb} {format_number_with_currency(b, obj)} more.",
-            f"{base}, then found another {format_number_with_currency(b, obj)}.",
+        verb = random.choice(SUBTRACTION_VERBS)
+        variations = [
+            f"{actor1} had {formatted_value1} {asset_str1} and {pronoun} {verb} {formatted_value2} {asset_str2} to {actor2}.",
+            f"{actor1}, who had {formatted_value1} {asset_str1}, {verb} {formatted_value2} {asset_str2} to {actor2}.",
+            f"Having {formatted_value1} {asset_str1}, {actor1} {verb} {formatted_value2} {asset_str2} to {actor2}.",
+            f"{actor1} had {formatted_value1} {asset_str1}. {pronoun.capitalize()} {verb} {formatted_value2} {asset_str2} to {actor2}.",
         ]
     
-    return random.choice(templates), operands
+    return random.choice(variations)
 
 
-def generate_sentence_one_operand(first: Subject, a: int, obj: str) -> Tuple[str, List[int]]:
-    obj_phrase = obj
-    templates = [
-        f"{first.name} has {format_number_with_currency(a, obj)} {obj_phrase}.",
-        f"{first.name} is holding {format_number_with_currency(a, obj)} {obj_phrase}.",
-        f"{first.name} owns {format_number_with_currency(a, obj)} {obj_phrase}.",
-        f"{first.name} found {format_number_with_currency(a, obj)} {obj_phrase}.",
+def generate_prompt_three_operands(
+    actor1: str, asset: str, values: List[int]
+) -> str:
+    """Generate prompt for three operands (always addition/sum)."""
+    asset_strs = [pluralize(asset, v) for v in values]
+    formatted_values = [format_asset_value(v, asset) for v in values]
+    
+    # Build list of items
+    items = []
+    for i, (fv, asset_str) in enumerate(zip(formatted_values, asset_strs)):
+        if i == len(formatted_values) - 1:
+            items.append(f"and {fv} {asset_str}")
+        else:
+            items.append(f"{fv} {asset_str}")
+    
+    items_str = ", ".join(items)
+    
+    variations = [
+        f"There are {items_str}.",
+        f"{actor1} has {items_str}.",
+        f"In total, there are {items_str}.",
     ]
-    return random.choice(templates), [a]
+    return random.choice(variations)
 
 
-def generate_sentence_multi_operands(
-    subjects: List[Subject], values: List[int], obj: str
-) -> Tuple[str, List[int]]:
-    assert len(subjects) == len(values) >= 3
-    first, *others = subjects
-    first_val, *other_vals = values
-    obj_phrase = obj
+def generate_example() -> Dict[str, Any]:
+    """Generate a single training example."""
+    num_operands = random.choices([1, 2, 3], weights=[20, 60, 20])[0]
+    asset = random.choice(ASSETS)
+    
+    if num_operands == 1:
+        value = random.randint(1, 100)
+        actor1, _ = select_actors()
+        prompt = generate_prompt_one_operand(actor1, asset, value)
+        operation = {"kind": "add", "operands": [value]}
+    
+    elif num_operands == 2:
+        is_addition = random.choice([True, False])
+        value1, value2 = generate_operands(2)
+        actor1, actor2 = select_actors()
+        prompt = generate_prompt_two_operands(
+            actor1, actor2, asset, value1, value2, is_addition
+        )
+        operation = {
+            "kind": "add" if is_addition else "subtract",
+            "operands": [value1, value2],
+        }
+    
+    else:  # num_operands == 3
+        values = generate_operands(3)
+        actor1, _ = select_actors()
+        prompt = generate_prompt_three_operands(actor1, asset, values)
+        operation = {"kind": "add", "operands": values}
+    
+    return {"prompt": prompt, "operation": operation}
 
-    base = f"{first.name} had {format_number_with_currency(first_val, obj)} {obj_phrase}"
 
-    others_names = [s.name for s in others]
-    others_vals = [format_number_with_currency(v, obj) for v in other_vals]
-
-    if len(others) == 2:
-        contrib = f"{others_names[0]} gave him {others_vals[0]} and {others_names[1]} gave him {others_vals[1]}"
+def compute_result(operation: Dict[str, Any]) -> int:
+    """Compute the expected result from an operation."""
+    kind = operation["kind"]
+    operands = operation["operands"]
+    
+    if kind == "add":
+        return sum(operands)
+    elif kind == "subtract":
+        return operands[0] - operands[1]
     else:
-        contrib = ", ".join(f"{name} gave him {val}" for name, val in zip(others_names, others_vals))
-        contrib = contrib.rsplit(", ", 1)
-        contrib = " and ".join(contrib)
-
-    verb = random.choice(ADD_VERBS)
-    templates = [
-        f"{base}, then {contrib}.",
-        f"{base}, and later {verb} {', '.join(others_vals)} from {', '.join(others_names)} respectively.",
-        f"{base}, then collected additional {', '.join(others_vals)} from others.",
-    ]
-
-    return random.choice(templates), values.copy()
+        raise ValueError(f"Unknown operation kind: {kind}")
 
 
-def detect_intent(prompt: str, operands: List[int]) -> str:
-    if len(operands) != 2:
-        return "add"
-    prompt_lower = prompt.lower()
-    if any(v.lower() in prompt_lower for v in SUBTRACT_VERBS):
-        return "subtract"
-    return "add"
-
-
-def generate_sample() -> Dict[str, Any]:
-    first_subject = sample_subject()
-    obj = random.choice(OBJECTS)
+def validate_example(example: Dict[str, Any]) -> bool:
+    """Validate that an example is well-formed."""
+    if "prompt" not in example or "operation" not in example:
+        return False
     
-    r = random.random()
-    if r < OPERAND_DIST["one"]:
-        a = random.randint(1, 100)
-        prompt, operands = generate_sentence_one_operand(first_subject, a, obj)
-        intent = "add"
-        result = a
-    elif r < OPERAND_DIST["one"] + OPERAND_DIST["two"]:
-        a = random.randint(1, 100)
-        b = random.randint(1, 100)
-        second_subject = sample_subjects_same_community(2, first_subject)[1]
-        use_subtract = random.random() < 0.5
-        prompt, operands = generate_sentence_two_operands(first_subject, second_subject, a, b, obj, use_subtract)
-        intent = "subtract" if use_subtract else "add"
-        result = a - b if intent == "subtract" else a + b
-    else:
-        n = random.randint(3, 6)
-        values = [random.randint(1, 50) for _ in range(n)]
-        subjects = sample_subjects_same_community(n, first_subject)
-        prompt, operands = generate_sentence_multi_operands(subjects, values, obj)
-        intent = "add"
-        result = sum(values)
+    operation = example["operation"]
+    if "kind" not in operation or "operands" not in operation:
+        return False
     
-    detected = detect_intent(prompt, operands)
-    if intent != detected:
-        print(f"[WARN] Intent mismatch: {intent} vs {detected} | {prompt}", file=sys.stderr)
+    if operation["kind"] not in ["add", "subtract"]:
+        return False
     
-    return {
-        "prompt": prompt,
-        "operands": operands,
-        "intent": intent,
-        "result": result
-    }
+    operands = operation["operands"]
+    if not isinstance(operands, list) or len(operands) < 1 or len(operands) > 3:
+        return False
+    
+    if not all(isinstance(op, int) and op > 0 for op in operands):
+        return False
+    
+    return True
 
 
-def write_json(data: List[Dict[str, Any]], filepath: str) -> None:
-    with open(filepath, "w", encoding=UTF8) as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def check_faith_balance(examples: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Check faith distribution in generated examples."""
+    faith_counts = defaultdict(int)
+    
+    for example in examples:
+        prompt = example["prompt"]
+        all_actors = get_all_actors()
+        
+        for actor in all_actors:
+            if actor in prompt:
+                faith = get_actor_faith(actor)
+                faith_counts[faith] += 1
+                break
+    
+    return dict(faith_counts)
 
 
-# ================================
-# UNIT TESTS
-# ================================
+def run_unit_tests(examples: List[Dict[str, Any]], sample_size: float = 0.005) -> bool:
+    """Run unit tests on a sample of examples."""
+    sample_count = max(1, int(len(examples) * sample_size))
+    sample = random.sample(examples, sample_count)
+    
+    passed = 0
+    failed = 0
+    
+    for example in sample:
+        if not validate_example(example):
+            failed += 1
+            continue
+        
+        operation = example["operation"]
+        result = compute_result(operation)
+        
+        # Basic sanity check: result should be positive
+        if result <= 0:
+            failed += 1
+        else:
+            passed += 1
+    
+    print(f"\n[Unit Tests] Tested {sample_count} examples: {passed} passed, {failed} failed")
+    return failed == 0
 
-class TestDatasetGenerator(unittest.TestCase):
-    def setUp(self):
-        random.seed(RANDOM_SEED)
 
-    def test_first_subject_positive_quantity(self):
-        for _ in range(100):
-            sample = generate_sample()
-            first_num = sample["operands"][0]
-            self.assertGreater(first_num, 0)
-            prompt = sample["prompt"]
-            self.assertTrue(
-                any(
-                    f"had {format_number_with_currency(first_num, obj)}" in prompt or
-                    f"has {format_number_with_currency(first_num, obj)}" in prompt or
-                    f"owns {format_number_with_currency(first_num, obj)}" in prompt
-                    for obj in OBJECTS
-                ),
-                f"Missing positive start: {prompt}"
-            )
+def generate_dataset(
+    num_train: int = 100000,
+    num_test: int = 20000,
+    seed: int = None,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Generate training and testing datasets."""
+    if seed is not None:
+        random.seed(seed)
+    
+    print(f"Generating {num_train} training examples...")
+    train_data = []
+    seen_prompts = set()
+    
+    pbar = tqdm(total=num_train, desc="Training")
+    while len(train_data) < num_train:
+        example = generate_example()
+        prompt = example["prompt"]
+        
+        # Avoid duplicates
+        if prompt not in seen_prompts:
+            train_data.append(example)
+            seen_prompts.add(prompt)
+            pbar.update(1)
+    pbar.close()
+    
+    print(f"Generating {num_test} testing examples...")
+    test_data = []
+    
+    pbar = tqdm(total=num_test, desc="Testing")
+    while len(test_data) < num_test:
+        example = generate_example()
+        prompt = example["prompt"]
+        
+        # Avoid duplicates and overlap with training
+        if prompt not in seen_prompts:
+            test_data.append(example)
+            seen_prompts.add(prompt)
+            pbar.update(1)
+    pbar.close()
+    
+    return train_data, test_data
 
-    def test_no_interfaith_pairing(self):
-        for _ in range(100):
-            sample = generate_sample()
-            prompt = sample["prompt"]
-            known_names = sum((NAMES[c]["male"] + NAMES[c]["female"] for c in NAMES), [])
-            names_in
+
+def save_dataset(data: List[Dict[str, Any]], filename: str) -> None:
+    """Save dataset to JSON Lines format."""
+    with open(filename, "w") as f:
+        for example in data:
+            f.write(json.dumps(example) + "\n")
+    print(f"Saved {len(data)} examples to {filename}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate synthetic math word problem datasets"
+    )
+    parser.add_argument(
+        "--scale",
+        type=int,
+        default=100,
+        help="Scale factor (1-100): output only scale%% of total rows (default: 100)",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility",
+    )
+    parser.add_argument(
+        "--no-tests",
+        action="store_true",
+        help="Skip unit tests",
+    )
+    
+    args = parser.parse_args()
+    
+    # Validate scale
+    if not 1 <= args.scale <= 100:
+        print("Error: --scale must be between 1 and 100")
+        sys.exit(1)
+    
+    # Calculate dataset sizes based on scale
+    base_train = 100000
+    base_test = 20000
+    num_train = max(1, int(base_train * args.scale / 100))
+    num_test = max(1, int(base_test * args.scale / 100))
+    
+    print(f"Configuration:")
+    print(f"  Scale: {args.scale}%")
+    print(f"  Training examples: {num_train}")
+    print(f"  Testing examples: {num_test}")
+    print(f"  Seed: {args.seed if args.seed else 'random'}")
+    print()
+    
+    # Generate datasets
+    train_data, test_data = generate_dataset(num_train, num_test, args.seed)
+    
+    # Run unit tests
+    if not args.no_tests:
+        print()
+        run_unit_tests(train_data + test_data)
+    
+    # Check faith balance (sample)
+    print()
+    faith_balance = check_faith_balance(train_data[:1000])
+    print(f"[Faith Balance Sample] {faith_balance}")
+    
+    # Save datasets
+    print()
+    save_dataset(train_data, "__train.json")
+    save_dataset(test_data, "__test.json")
+    
+    print()
+    print("✓ Dataset generation complete!")
+
+
+if __name__ == "__main__":
+    main()
